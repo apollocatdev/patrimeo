@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'version' => '0.2.1',
+    'version' => '0.2.2-alpha',
     'rate_limiters' => [
         'yahoo' => 3,
         'default' => 1,

@@ -1,3 +1,6 @@
+
+![Version](https://img.shields.io/badge/version-0.2.2--alpha-orange)
+
 ![Logo clair](public/images/patrimeo_vertical.png#gh-light-mode-only)
 ![Logo sombre](public/images/patrimeo_vertical_dark.png#gh-dark-mode-only)
 
