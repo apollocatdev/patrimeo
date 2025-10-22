@@ -194,6 +194,7 @@ class AssetResource extends Resource
                 ->label('Schedules')
                 ->badge()
                 ->separator(', ')
+                ->toggleable(isToggledHiddenByDefault: true)
                 ->color('success'),
         ];
 
