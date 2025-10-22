@@ -1,0 +1,89 @@
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../../app/Filament/**/*';
+@source '../../../../resources/views/filament/**/*';
+@source '../../../../resources/views/livewire/**/*';
+
+
+.fi-ta-row {
+
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+}
+
+.fi-ta-cell {
+    padding-top: 10px !important;
+    padding-bottom: 6px !important;
+}
+
+.noblink .fi-btn:disabled,
+.noblink .fi-btn[disabled],
+.noblink .fi-icon-btn:disabled,
+.noblink .fi-icon-btn[disabled],
+.noblink .fi-dropdown [disabled],
+.noblink button:disabled,
+.noblink [aria-disabled="true"],
+.noblink [data-disabled] {
+    opacity: 1 !important;
+    filter: none !important;
+    pointer-events: auto !important;
+}
+
+.custom-separator .fi-dropdown-list>a:is(:nth-of-type(5), :nth-of-type(7), :nth-of-type(9), :nth-of-type(11)) {
+    border-top: 1px solid #E5E7EB;
+    /* gray-200 */
+    margin-top: .25rem;
+    padding-top: .85rem;
+}
+
+
+
+/* Dark */
+.dark .custom-separator .fi-dropdown-list>a:is(:nth-of-type(5), :nth-of-type(7), :nth-of-type(9), :nth-of-type(11)) {
+    border-top-color: #70707B;
+}
+
+/* Move tabs above table headers */
+.fi-ta-tabs {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+/* Position tabs above the table - targeting Filament v4 tab structure */
+.fi-ta-tabs .fi-tabs,
+.fi-ta-tabs [role="tablist"],
+.fi-ta-tabs .fi-tabs-list {
+    position: absolute;
+    top: -60px;
+    left: 0;
+    z-index: 10;
+    background: white;
+    padding: 0.5rem 0;
+    border-radius: 0.375rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Dark mode support */
+.dark .fi-ta-tabs .fi-tabs,
+.dark .fi-ta-tabs [role="tablist"],
+.dark .fi-ta-tabs .fi-tabs-list {
+    background: #1F2937;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* Alternative approach - target the tabs container more broadly */
+.fi-ta-tabs>div:first-child {
+    position: absolute;
+    top: -60px;
+    left: 0;
+    z-index: 10;
+    background: white;
+    padding: 0.5rem 0;
+    border-radius: 0.375rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.dark .fi-ta-tabs>div:first-child {
+    background: #1F2937;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+}
