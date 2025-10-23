@@ -15,6 +15,7 @@ class CreateAsset extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['user_id'] = Auth::user()->id;
+        $data['last_update'] = now();
         return $data;
     }
 
