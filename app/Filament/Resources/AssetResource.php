@@ -59,7 +59,14 @@ class AssetResource extends Resource
                         ->relationship('class', 'name')
                         ->required(),
                     TextInput::make('quantity')
+                        ->required()
                         ->numeric(),
+                    TextInput::make('last_update')
+                        ->label(__('Last Update'))
+                        ->required()
+                        ->type('datetime-local')
+                        ->default(now()->format('Y-m-d\TH:i'))
+                        ->helperText(__('Last time this asset was updated')),
                     Select::make('cotation_id')
                         ->required()
                         ->relationship('cotation', 'name'),
@@ -68,6 +75,7 @@ class AssetResource extends Resource
                 Section::make(__('Transfer Update Parameters'))->schema([
                     Select::make('update_method')
                         ->label(__('Transfer Update Method'))
+                        ->required()
                         ->options(TransferUpdateMethod::class)
                         ->helperText(__('Method used to update transfers for this asset'))
                         ->placeholder(__('Select a transfer update method'))
@@ -77,6 +85,7 @@ class AssetResource extends Resource
                             ->getComponent('dynamicTransferFields')
                             ->getChildSchema()
                             ->fill()),
+
 
                     Group::make()
                         ->schema(function (Get $get): array {
@@ -101,7 +110,7 @@ class AssetResource extends Resource
                         ->preload()
                         ->searchable()
                         ->helperText('Choose which schedules apply to this asset'),
-                ])->columns(2),
+                ])->columns(1),
 
                 Section::make(__('Taxonomies & Tags'))
                     ->collapsible()

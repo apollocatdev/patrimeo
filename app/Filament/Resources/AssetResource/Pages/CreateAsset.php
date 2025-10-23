@@ -2,11 +2,9 @@
 
 namespace App\Filament\Resources\AssetResource\Pages;
 
-use Filament\Actions;
 use Illuminate\Support\Facades\Auth;
 use App\Filament\Resources\AssetResource;
 use Filament\Resources\Pages\CreateRecord;
-use App\Models\TaxonomyTag;
 
 class CreateAsset extends CreateRecord
 {
@@ -15,7 +13,6 @@ class CreateAsset extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['user_id'] = Auth::user()->id;
-        $data['last_update'] = now();
         return $data;
     }
 

@@ -225,7 +225,7 @@ class TransfersWoob implements TransfersInterface
         return [
             'account_name' => TextInput::make('account_name')
                 ->label(__('Account Name'))
-                ->helperText(__('Account identifier for woob (e.g., 00571033902T@lcl)'))
+                ->helperText(__('Account identifier for woob (e.g., 005981201T@lcl)'))
                 ->required(),
             'transaction_count' => TextInput::make('transaction_count')
                 ->label(__('Number of Transactions'))
