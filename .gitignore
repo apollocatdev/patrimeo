@@ -28,3 +28,5 @@ todo.todo
 AGENTS.md
 deploy.sh
 /.cursor
+/docs/.vitepress/cache
+/docs/.vitepress/dist 
