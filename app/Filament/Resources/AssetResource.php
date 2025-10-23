@@ -7,21 +7,24 @@ use Filament\Tables;
 use App\Models\Asset;
 use App\Models\Taxonomy;
 use Filament\Tables\Table;
-use App\Models\TaxonomyTag;
+use App\Enums\TaxonomyTypes;
+use Filament\Actions\Action;
 use Filament\Schemas\Schema;
 use Filament\Actions\EditAction;
 use Filament\Resources\Resource;
+use Filament\Actions\DeleteAction;
 use App\Enums\TransferUpdateMethod;
-use App\Enums\TaxonomyTypes;
 use Filament\Actions\BulkActionGroup;
 use Filament\Forms\Components\Select;
+use Filament\Schemas\Components\Tabs;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Schemas\Components\Group;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Fieldset;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\ToggleButtons;
@@ -33,7 +36,6 @@ use App\Filament\Resources\AssetResource\Pages\EditAsset;
 use App\Filament\Resources\AssetResource\Pages\ListAssets;
 use App\Filament\Resources\AssetResource\RelationManagers;
 use App\Filament\Resources\AssetResource\Pages\CreateAsset;
-use Filament\Tables\Filters\SelectFilter;
 
 class AssetResource extends Resource
 {
@@ -258,7 +260,38 @@ class AssetResource extends Resource
             ->defaultPaginationPageOption(100)
             ->paginated([50, 100, 'all'])
             ->recordActions([
+                Action::make('refresh')
+                    ->label(__('Update'))
+                    ->icon('heroicon-o-arrow-path')
+                    ->visible(
+                        fn(Asset $record): bool =>
+                        !in_array($record->update_method, [TransferUpdateMethod::FIXED, TransferUpdateMethod::MANUAL])
+                    )
+                    ->action(function (Asset $record) {
+                        try {
+                            // Get the service class for this cotation
+                            $serviceClass = $record->update_method->getServiceClass();
+                            if ($serviceClass) {
+                                $service = new $serviceClass($record);
+                                $transfers = $service->getTransfers();
+
+
+                                Notification::make()
+                                    ->title(__('Asset updated successfully'))
+                                    ->body(__(':value new transfers', ['value' => count($transfers)]))
+                                    ->success()
+                                    ->send();
+                            }
+                        } catch (\Exception $e) {
+                            Notification::make()
+                                ->title(__('Asset update failed'))
+                                ->body(__('Failed to update asset: :message', ['message' => $e->getMessage()]))
+                                ->danger()
+                                ->send();
+                        }
+                    }),
                 EditAction::make(),
+                DeleteAction::make()
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
