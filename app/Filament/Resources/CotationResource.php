@@ -159,7 +159,7 @@ class CotationResource extends Resource
             ])
             ->recordActions([
                 Action::make('refresh')
-                    ->label(__('Cotation'))
+                    ->label(__('Update'))
                     ->icon('heroicon-o-arrow-path')
                     ->visible(
                         fn(Cotation $record): bool =>
