@@ -3,15 +3,19 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "release": "dotenv -e .env -- release-it"
     },
     "devDependencies": {
+        "@release-it/bumper": "^7.0.5",
+        "@release-it/conventional-changelog": "^10.0.1",
         "@tailwindcss/forms": "^0.5.10",
         "@tailwindcss/typography": "^0.5.16",
         "@tailwindcss/vite": "^4.1.11",
         "autoprefixer": "^10.4.21",
         "axios": "^1.8.2",
         "concurrently": "^9.0.1",
+        "dotenv-cli": "^10.0.0",
         "laravel-vite-plugin": "^1.2.0",
         "postcss": "^8.5.3",
         "postcss-nesting": "^13.0.1",
