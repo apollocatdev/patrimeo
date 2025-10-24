@@ -9,17 +9,17 @@ use Filament\Schemas\Components\Section;
 class IntegrationsSettings extends Settings
 {
     public string $weboobPath = '';
-    public string $finarySharingLink = '';
-    public string $finarySecureCode = '';
-    public string $coingeckoApiKey = '';
+    public ?string $finarySharingLink = null;
+    public ?string $finarySecureCode = null;
+    public ?string $coingeckoApiKey = null;
 
     public static function default(): static
     {
         $instance = new static();
         $instance->weboobPath = env('WOOB_BINARY_PATH', '/usr/bin/woob');
-        $instance->finarySharingLink = '';
-        $instance->finarySecureCode = '';
-        $instance->coingeckoApiKey = '';
+        $instance->finarySharingLink = null;
+        $instance->finarySecureCode = null;
+        $instance->coingeckoApiKey = null;
         return $instance;
     }
 

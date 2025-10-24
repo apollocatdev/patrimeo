@@ -19,8 +19,8 @@ class EmailSettings extends Settings
     public string $host = '127.0.0.1';
     public int $port = 1025;
     public string $encryption = 'none';
-    public string $username = '';
-    public string $password = '';
+    public ?string $username = null;
+    public ?string $password = null;
 
     public static function default(): static
     {
@@ -28,8 +28,8 @@ class EmailSettings extends Settings
         $instance->host = '127.0.0.1';
         $instance->port = 1025;
         $instance->encryption = 'none';
-        $instance->username = '';
-        $instance->password = '';
+        $instance->username = null;
+        $instance->password = null;
         return $instance;
     }
 
