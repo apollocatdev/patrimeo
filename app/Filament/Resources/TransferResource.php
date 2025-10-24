@@ -4,24 +4,25 @@ namespace App\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Tables;
+use App\Models\Taxonomy;
 use App\Models\Transfer;
 use Filament\Tables\Table;
+use App\Enums\TransferType;
+use App\Enums\TaxonomyTypes;
 use Filament\Schemas\Schema;
 use Filament\Actions\EditAction;
 use Filament\Resources\Resource;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Forms\Components\Select;
 use Filament\Actions\DeleteBulkAction;
+use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\CheckboxList;
 use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\DatePicker;
 use Illuminate\Database\Eloquent\Builder;
-use App\Enums\TransferType;
-use App\Enums\TaxonomyTypes;
-use App\Models\Taxonomy;
+use Filament\Forms\Components\CheckboxList;
 use App\Filament\Resources\TransferResource\Pages;
 use App\Filament\Resources\TransferResource\Pages\EditTransfer;
 use App\Filament\Resources\TransferResource\Pages\ListTransfers;
@@ -134,6 +135,7 @@ class TransferResource extends Resource
             ->paginated([25, 50, 100, 'all'])
             ->recordActions([
                 EditAction::make(),
+                DeleteAction::make()
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
