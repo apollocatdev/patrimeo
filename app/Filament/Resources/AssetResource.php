@@ -17,6 +17,7 @@ use App\Enums\TransferUpdateMethod;
 use Filament\Actions\BulkActionGroup;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Tabs;
+use App\Settings\LocalizationSettings;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Schemas\Components\Group;
 use Filament\Tables\Columns\TextColumn;
@@ -29,6 +30,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Tables\Columns\Summarizers\Sum;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Schemas\Components\Utilities\Get;
 use App\Filament\Resources\AssetResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -61,12 +63,12 @@ class AssetResource extends Resource
                     TextInput::make('quantity')
                         ->required()
                         ->numeric(),
-                    TextInput::make('last_update')
-                        ->label(__('Last Update'))
-                        ->required()
-                        ->type('datetime-local')
-                        ->default(now()->format('Y-m-d\TH:i'))
-                        ->helperText(__('Last time this asset was updated')),
+                    // DateTimePicker::make('last_update')
+                    //     ->label(__('Last Update'))
+                    //     ->required()
+                    //     ->native(false)
+                    //     ->locale(LocalizationSettings::get()->dateFormat)
+                    //     ->helperText(__('Last time this asset was updated')),
                     Select::make('cotation_id')
                         ->required()
                         ->relationship('cotation', 'name'),
