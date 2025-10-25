@@ -101,16 +101,16 @@ class Asset extends Model
 
     public function getRateLimiterKeyAttribute(): string
     {
-        if ($this->update_method === TransferUpdateMethod::FINARY) {
+        if ($this->update_method === TransactionUpdateMethod::FINARY) {
             return 'finary';
         }
-        if ($this->update_method === TransferUpdateMethod::WOOB) {
+        if ($this->update_method === TransactionUpdateMethod::WOOB) {
             return 'woob';
         }
-        if ($this->update_method === TransferUpdateMethod::COMMAND_JSON) {
+        if ($this->update_method === TransactionUpdateMethod::COMMAND_JSON) {
             return 'command_json';
         }
-        if ($this->update_method === TransferUpdateMethod::COMMAND_SIMPLE_BALANCE) {
+        if ($this->update_method === TransactionUpdateMethod::COMMAND_SIMPLE_BALANCE) {
             return 'command_simple_balance';
         }
         return 'none';

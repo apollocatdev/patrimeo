@@ -8,7 +8,7 @@ use App\Services\Transfers\TransfersCommandSimpleBalance;
 use App\Services\Transfers\TransfersWoob;
 use App\Services\Transfers\TransfersFinary;
 
-enum TransferUpdateMethod: string implements HasLabel
+enum TransactionUpdateMethod: string implements HasLabel
 {
     case MANUAL = 'manual';
     case FIXED = 'fixed';
