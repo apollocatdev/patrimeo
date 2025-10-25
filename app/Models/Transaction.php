@@ -12,11 +12,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 #[ScopedBy([UserScope::class])]
 class Transaction extends Model
 {
-    protected $fillable = ['type', 'source_id', 'source_quantity', 'destination_id', 'destination_quantity', 'date', 'user_id', 'comment'];
+    protected $fillable = ['type', 'source_id', 'source_quantity', 'destination_id', 'destination_quantity', 'date', 'user_id', 'comment', 'reconciled'];
 
     protected $casts = [
         'date' => 'datetime',
         'type' => TransactionType::class,
+        'reconciled' => 'boolean',
     ];
 
     public function source(): BelongsTo
