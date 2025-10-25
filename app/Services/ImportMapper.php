@@ -18,7 +18,7 @@ class ImportMapper
         $this->dropdowns = [
             'asset_classes' => AssetClass::all(),
             'envelops' => Envelop::all(),
-            'cotations' => Cotation::all(),
+            'valuations' => Valuation::all(),
         ];
     }
 
