@@ -11,6 +11,6 @@ class LogValuations extends AbstractLog
 
     protected static function getLogLevelSetting(): string
     {
-        return 'valuation_log_level';
+        return 'valuationLogLevel';
     }
 }

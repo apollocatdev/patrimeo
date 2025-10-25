@@ -43,14 +43,9 @@ abstract class AbstractLog
             $settings = VariousSettings::default();
         }
 
-        $levelSetting = static::getLogLevelSetting();
+        $logLevelProperty = static::getLogLevelSetting();
 
-        return match ($levelSetting) {
-            'cotation_log_level' => $settings->cotationLogLevel ?? 'none',
-            'transfers_log_level' => $settings->transfersLogLevel ?? 'none',
-            'dashboards_log_level' => $settings->dashboardsLogLevel ?? 'none',
-            default => 'none'
-        };
+        return $settings->{$logLevelProperty} ?? 'none';
     }
 
     public static function debug(string $message, array $context = []): void

@@ -133,16 +133,16 @@ return [
             'path' => storage_path('logs/laravel.log'),
         ],
 
-        'cotations' => [
+        'valuations' => [
             'driver' => 'single',
-            'path' => storage_path('logs/cotations.log'),
+            'path' => storage_path('logs/valuations.log'),
             'level' => 'debug',
             'replace_placeholders' => true,
         ],
 
-        'transfers' => [
+        'transactions' => [
             'driver' => 'single',
-            'path' => storage_path('logs/transfers.log'),
+            'path' => storage_path('logs/transactions.log'),
             'level' => 'debug',
             'replace_placeholders' => true,
         ],

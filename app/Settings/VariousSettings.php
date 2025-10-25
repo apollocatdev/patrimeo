@@ -16,8 +16,8 @@ class VariousSettings extends Settings
     public int $sessionLifetime = 120;
     public bool $expireSessionOnBrowserClose = false;
     public string $chartsTheme = 'palette6';
-    public string $cotationLogLevel = 'none';
-    public string $transfersLogLevel = 'none';
+    public string $valuationLogLevel = 'none';
+    public string $transactionsLogLevel = 'none';
     public string $dashboardsLogLevel = 'none';
 
     public static function default(): static
@@ -28,8 +28,8 @@ class VariousSettings extends Settings
         $instance->sessionLifetime = 120;
         $instance->expireSessionOnBrowserClose = false;
         $instance->chartsTheme = 'palette6';
-        $instance->cotationLogLevel = 'none';
-        $instance->transfersLogLevel = 'none';
+        $instance->valuationLogLevel = 'none';
+        $instance->transactionsLogLevel = 'none';
         $instance->dashboardsLogLevel = 'none';
         return $instance;
     }
@@ -104,16 +104,16 @@ class VariousSettings extends Settings
                 Section::make('Logging')
                     ->description('Configure logging levels for different components')
                     ->schema([
-                        Select::make('cotationLogLevel')
-                            ->label('Cotation Log Level')
+                        Select::make('valuationLogLevel')
+                            ->label('Valuation Log Level')
                             ->options([
                                 'none' => 'None',
                                 'info' => 'Info',
                                 'debug' => 'Debug',
                             ])
                             ->required(),
-                        Select::make('transfersLogLevel')
-                            ->label('Transfers Log Level')
+                        Select::make('transactionsLogLevel')
+                            ->label('Transactions Log Level')
                             ->options([
                                 'none' => 'None',
                                 'info' => 'Info',

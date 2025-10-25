@@ -4,5 +4,13 @@ namespace App\Helpers\Logs;
 
 class LogTransactions extends AbstractLog
 {
-    protected static string $logName = 'transactions';
+    protected static function getChannelName(): string
+    {
+        return 'transactions';
+    }
+
+    protected static function getLogLevelSetting(): string
+    {
+        return 'transactionsLogLevel';
+    }
 }

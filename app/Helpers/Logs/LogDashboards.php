@@ -11,6 +11,6 @@ class LogDashboards extends AbstractLog
 
     protected static function getLogLevelSetting(): string
     {
-        return 'dashboards_log_level';
+        return 'dashboardsLogLevel';
     }
 }
