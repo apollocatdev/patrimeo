@@ -113,7 +113,7 @@ class ValuationResource extends Resource
                         CheckboxList::make('schedules')
                             ->relationship('schedules', 'name')
                             ->descriptions(function ($record) {
-                                return $record->cron;
+                                return $record?->cron ?? [];
                             })
                             ->helperText('Choose which schedules should update this cotation'),
                     ]),

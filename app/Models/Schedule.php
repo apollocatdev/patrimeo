@@ -31,9 +31,9 @@ class Schedule extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function cotations(): MorphToMany
+    public function valuations(): MorphToMany
     {
-        return $this->morphedByMany(Cotation::class, 'schedulable', 'schedulables');
+        return $this->morphedByMany(Valuation::class, 'schedulable', 'schedulables');
     }
 
     public function assets(): MorphToMany
