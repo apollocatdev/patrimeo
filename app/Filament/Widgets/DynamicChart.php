@@ -5,7 +5,7 @@ namespace App\Filament\Widgets;
 use App\Models\Asset;
 use App\Models\Widget;
 // Setting model removed - using filament-typehint-settings
-use App\Models\Cotation;
+use App\Models\Valuation;
 use App\Models\WidgetStat;
 use Filament\Support\RawJs;
 use App\Charts\AbstractChart;

@@ -3,11 +3,11 @@
 namespace App\Helpers\PortfolioCompute;
 
 use App\Models\Asset;
-use App\Models\Transfer;
+use App\Models\Transaction;
 use App\Models\Filter;
-use App\Enums\TransferType;
+use App\Enums\TransactionType;
 use Illuminate\Support\Carbon;
-use App\Models\CotationHistory;
+use App\Models\ValuationHistory;
 use Illuminate\Support\Collection;
 
 class PortfolioState
@@ -31,18 +31,18 @@ class PortfolioState
         }
         $assetIds = $this->assets->pluck('id');
         $assets = $this->assets->keyBy('id');
-        $transfers = Transfer::where('date', '<=', $this->date)->whereIn('source_id', $assetIds)->orWhereIn('destination_id', $assetIds)->get();
+        $transactions = Transaction::where('date', '<=', $this->date)->whereIn('source_id', $assetIds)->orWhereIn('destination_id', $assetIds)->get();
 
-        foreach ($transfers as $transfer) {
-            if ($transfer->type === TransferType::Income) {
-                $assets[$transfer->destination_id]->quantity -= $transfer->destination_quantity;
+        foreach ($transactions as $transaction) {
+            if ($transaction->type === TransactionType::Income) {
+                $assets[$transaction->destination_id]->quantity -= $transaction->destination_quantity;
             }
-            if ($transfer->type === TransferType::Expense) {
-                $assets[$transfer->source_id]->quantity += $transfer->source_quantity;
+            if ($transaction->type === TransactionType::Expense) {
+                $assets[$transaction->source_id]->quantity += $transaction->source_quantity;
             }
-            if ($transfer->type === TransferType::Transfer) {
-                $assets[$transfer->source_id]->quantity += $transfer->source_quantity;
-                $assets[$transfer->destination_id]->quantity -= $transfer->destination_quantity;
+            if ($transaction->type === TransactionType::Transfer) {
+                $assets[$transaction->source_id]->quantity += $transaction->source_quantity;
+                $assets[$transaction->destination_id]->quantity -= $transaction->destination_quantity;
             }
         }
         $this->assets = $assets->values();
@@ -55,20 +55,20 @@ class PortfolioState
             return $this;
         }
 
-        // $lastDate = CotationHistory::where('date', '<=', $this->date)->orderBy('date', 'desc')->first()->date->format('Y-m-d');
-        $beforeDateRecord = CotationHistory::where('date', '<=', $this->date)->orderBy('date', 'desc')->first();
+        // $lastDate = ValuationHistory::where('date', '<=', $this->date)->orderBy('date', 'desc')->first()->date->format('Y-m-d');
+        $beforeDateRecord = ValuationHistory::where('date', '<=', $this->date)->orderBy('date', 'desc')->first();
         if ($beforeDateRecord === null) {
             return $this;
         }
         $lastDate = $beforeDateRecord->date->format('Y-m-d');
 
-        $cotations = CotationHistory::where('date', $lastDate)->get()->keyBy('cotation_id');
+        $valuations = ValuationHistory::where('date', $lastDate)->get()->keyBy('valuation_id');
 
-        $this->assets->map(function (Asset $asset) use ($cotations) {
-            if (isset($cotations[$asset->cotation_id])) {
-                $asset->value = $asset->quantity * $cotations[$asset->cotation_id]->value_main_currency;
+        $this->assets->map(function (Asset $asset) use ($valuations) {
+            if (isset($valuations[$asset->valuation_id])) {
+                $asset->value = $asset->quantity * $valuations[$asset->valuation_id]->value_main_currency;
             } else {
-                $asset->value = $asset->quantity * $asset->cotation->value_main_currency;
+                $asset->value = $asset->quantity * $asset->valuation->value_main_currency;
             }
             return $asset;
         });

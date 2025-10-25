@@ -3,8 +3,8 @@
 namespace App\Jobs;
 
 use App\Models\Schedule;
-use App\Jobs\SyncCotations;
-use App\Jobs\SyncTransfers;
+use App\Jobs\SyncValuations;
+use App\Jobs\SyncTransactions;
 use App\Settings\EmailSettings;
 use Cron\CronExpression;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -81,20 +81,20 @@ class CheckSchedules implements ShouldQueue
 
     private function executeUpdateAction(Schedule $schedule): void
     {
-        $cotations = $schedule->cotations;
+        $valuations = $schedule->valuations;
         $assets = $schedule->assets;
 
-        if ($cotations->isNotEmpty()) {
-            $cotationNames = $cotations->pluck('name')->toArray();
-            SyncCotations::dispatch($cotationNames, $schedule->user_id);
-            Log::info("Dispatched cotation updates for schedule {$schedule->name}", [
-                'cotations' => $cotationNames
+        if ($valuations->isNotEmpty()) {
+            $valuationNames = $valuations->pluck('name')->toArray();
+            SyncValuations::dispatch($valuationNames, $schedule->user_id);
+            Log::info("Dispatched valuation updates for schedule {$schedule->name}", [
+                'valuations' => $valuationNames
             ]);
         }
 
         if ($assets->isNotEmpty()) {
             $assetNames = $assets->pluck('name')->toArray();
-            SyncTransfers::dispatch($assetNames, $schedule->user_id);
+            SyncTransactions::dispatch($assetNames, $schedule->user_id);
             Log::info("Dispatched asset updates for schedule {$schedule->name}", [
                 'assets' => $assetNames
             ]);
@@ -104,13 +104,13 @@ class CheckSchedules implements ShouldQueue
     private function executeEmailAction(Schedule $schedule, \App\Data\Schedules\Action $action): void
     {
         $user = $schedule->user;
-        $cotations = $schedule->cotations;
+        $valuations = $schedule->valuations;
         $assets = $schedule->assets;
 
         $data = [
             'message' => $action->message,
             'schedule' => $schedule,
-            'cotations' => $cotations,
+            'valuations' => $valuations,
             'assets' => $assets,
         ];
 
@@ -137,13 +137,13 @@ class CheckSchedules implements ShouldQueue
     private function executeNotifyAction(Schedule $schedule, \App\Data\Schedules\Action $action): void
     {
         $user = $schedule->user;
-        $cotations = $schedule->cotations;
+        $valuations = $schedule->valuations;
         $assets = $schedule->assets;
 
         $data = [
             'message' => $action->message,
             'schedule' => $schedule,
-            'cotations' => $cotations,
+            'valuations' => $valuations,
             'assets' => $assets,
         ];
 

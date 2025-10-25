@@ -5,7 +5,7 @@ This directory contains log helper classes for different system components.
 ## Available Log Helpers
 
 - `LogCotations` - For cotation update operations
-- `LogTransfers` - For transfer operations  
+- `LogTransactions` - For transaction operations  
 - `LogDashboards` - For dashboard and stat computations
 
 ## Usage Examples
@@ -27,12 +27,12 @@ LogCotations::warning('Failed to fetch cotation from API', ['asset_id' => 123, '
 LogCotations::error('Critical error in cotation update', ['asset_id' => 123, 'exception' => $e->getMessage()]);
 ```
 
-### LogTransfers
+### LogTransactions
 ```php
-use App\Helpers\Logs\LogTransfers;
+use App\Helpers\Logs\LogTransactions;
 
-LogTransfers::info('Transfer created', ['transfer_id' => 456, 'amount' => 1000.00]);
-LogTransfers::debug('Processing transfer validation', ['transfer_id' => 456]);
+LogTransactions::info('Transaction created', ['transaction_id' => 456, 'amount' => 1000.00]);
+LogTransactions::debug('Processing transaction validation', ['transaction_id' => 456]);
 ```
 
 ### LogDashboards
@@ -55,13 +55,13 @@ The log levels are configured in the Various settings:
 
 Log levels can be configured in the Settings > Various tab:
 - Cotation Updates Log Level
-- Transfers Log Level  
+- Transactions Log Level  
 - Dashboards Log Level
 
 ## Viewing Logs
 
 Logs can be viewed in the Configuration > View Logs page, which provides:
-- Filtering by channel (Cotations, Transfers, Dashboards)
+- Filtering by channel (Cotations, Transactions, Dashboards)
 - Filtering by level (Debug, Info, Warning, Error)
 - Real-time log entry display
 - Context data expansion

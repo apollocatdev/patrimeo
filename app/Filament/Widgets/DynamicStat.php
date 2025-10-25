@@ -4,7 +4,7 @@ namespace App\Filament\Widgets;
 
 use App\Models\Asset;
 use App\Models\Widget;
-use App\Models\Cotation;
+use App\Models\Valuation;
 use App\Enums\Widgets\WidgetType;
 use App\Models\WidgetStat;
 use App\Helpers\WidgetHelperTrait;

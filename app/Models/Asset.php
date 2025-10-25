@@ -11,19 +11,19 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use App\Models\Transfer;
-use App\Enums\TransferUpdateMethod;
+use App\Models\Transaction;
+use App\Enums\TransactionUpdateMethod;
 
 #[ScopedBy([UserScope::class])]
 #[ObservedBy([AssetObserver::class])]
 class Asset extends Model
 {
     use HasFactory;
-    protected $fillable = ['name', 'envelop_id', 'class_id', 'quantity', 'cotation_id', 'value', 'last_update', 'update_method', 'update_data', 'user_id'];
+    protected $fillable = ['name', 'envelop_id', 'class_id', 'quantity', 'valuation_id', 'value', 'last_update', 'update_method', 'update_data', 'user_id'];
 
     protected $casts = [
         'last_update' => 'datetime',
-        'update_method' => TransferUpdateMethod::class,
+        'update_method' => TransactionUpdateMethod::class,
         'update_data' => 'array',
     ];
 
@@ -42,50 +42,50 @@ class Asset extends Model
         return $this->belongsTo(AssetClass::class, 'class_id');
     }
 
-    public function cotation(): BelongsTo
+    public function valuation(): BelongsTo
     {
-        return $this->belongsTo(Cotation::class);
+        return $this->belongsTo(Valuation::class);
     }
 
     public function computeQuantity(): void
     {
-        // Get all transfers that occurred after the last_update
-        $transfers = Transfer::where('date', '>', $this->last_update)
+        // Get all transactions that occurred after the last_update
+        $transactions = Transaction::where('date', '>', $this->last_update)
             ->orderBy('date')
             ->get();
 
         $newQuantity = $this->quantity;
-        $lastTransferDate = null;
+        $lastTransactionDate = null;
 
-        foreach ($transfers as $transfer) {
+        foreach ($transactions as $transaction) {
             // If this asset is the source, subtract the quantity
-            if ($transfer->source_id === $this->id) {
-                $newQuantity -= $transfer->source_quantity ?? 0;
+            if ($transaction->source_id === $this->id) {
+                $newQuantity -= $transaction->source_quantity ?? 0;
             }
 
             // If this asset is the destination, add the quantity
-            if ($transfer->destination_id === $this->id) {
-                $newQuantity += $transfer->destination_quantity ?? 0;
+            if ($transaction->destination_id === $this->id) {
+                $newQuantity += $transaction->destination_quantity ?? 0;
             }
 
-            // Track the last transfer date
-            if (!$lastTransferDate || $transfer->date > $lastTransferDate) {
-                $lastTransferDate = $transfer->date;
+            // Track the last transaction date
+            if (!$lastTransactionDate || $transaction->date > $lastTransactionDate) {
+                $lastTransactionDate = $transaction->date;
             }
         }
 
         // Update the asset quantity and last_update
-        if ($lastTransferDate !== null) {
-            $this->last_update = $lastTransferDate;
+        if ($lastTransactionDate !== null) {
+            $this->last_update = $lastTransactionDate;
         }
         $this->quantity = $newQuantity;
         $this->save();
     }
 
     /**
-     * Get the transfer service class for this asset
+     * Get the transaction service class for this asset
      */
-    public function getTransferServiceClass(): ?string
+    public function getTransactionServiceClass(): ?string
     {
         if (!$this->update_method) {
             return null;

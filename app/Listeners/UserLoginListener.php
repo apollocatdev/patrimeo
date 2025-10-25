@@ -4,13 +4,13 @@ namespace App\Listeners;
 
 // Settings are now handled by filament-typehint-settings module
 use Illuminate\Auth\Events\Login;
-use App\Data\UpdateCotationsStatus;
+use App\Data\UpdateValuationsStatus;
 
 class UserLoginListener
 {
     public function handle(Login $event): void
     {
         // Settings are now handled by filament-typehint-settings module
-        UpdateCotationsStatus::init($event->user->id);
+        UpdateValuationsStatus::init($event->user->id);
     }
 }

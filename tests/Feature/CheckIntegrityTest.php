@@ -6,7 +6,7 @@ use Tests\TestCase;
 use App\Jobs\CheckIntegrity;
 use App\Models\User;
 use App\Models\Asset;
-use App\Models\Cotation;
+use App\Models\Valuation;
 use App\Models\Currency;
 use App\Models\Envelop;
 use App\Models\AssetClass;

@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 use Database\Seeders\DemoSeeder;
-use App\Enums\CotationUpdateMethod;
+use App\Enums\ValuationUpdateMethod;
 use Illuminate\Support\Facades\Log;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Support\Facades\Hash;
@@ -47,9 +47,9 @@ class DatabaseSeeder extends Seeder
     {
         $defaultPeriodicity = [];
 
-        foreach (CotationUpdateMethod::cases() as $method) {
+        foreach (ValuationUpdateMethod::cases() as $method) {
             // Skip FIXED method as it doesn't require updates
-            if ($method === CotationUpdateMethod::FIXED) {
+            if ($method === ValuationUpdateMethod::FIXED) {
                 continue;
             }
 

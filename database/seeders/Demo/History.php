@@ -4,11 +4,11 @@ namespace Database\Seeders\Demo;
 
 use App\Models\User;
 use App\Models\Asset;
-use App\Models\Transfer;
-use App\Models\Cotation;
-use App\Models\CotationHistory;
-use App\Enums\TransferType;
-use App\Enums\CotationUpdateMethod;
+use App\Models\Transaction;
+use App\Models\Valuation;
+use App\Models\ValuationHistory;
+use App\Enums\TransactionType;
+use App\Enums\ValuationUpdateMethod;
 use Illuminate\Database\Seeder;
 
 class History extends Seeder
@@ -17,12 +17,12 @@ class History extends Seeder
     {
         $user = User::first();
         $this->createHistory($user);
-        $this->createTransfers($user);
+        $this->createTransactions($user);
     }
 
     public function createHistory(User $user)
     {
-        // $cotations = Cotation::where('update_method', '!=', CotationUpdateMethod::FIXED)->where('update_method', '!=', CotationUpdateMethod::MANUAL)->get();
+        // $cotations = Cotation::where('update_method', '!=', ValuationUpdateMethod::FIXED)->where('update_method', '!=', ValuationUpdateMethod::MANUAL)->get();
         $cotations = Cotation::all();
         $histories = collect([]);
 
@@ -33,7 +33,7 @@ class History extends Seeder
                 $percent = rand(-2, 2)  / 100;
                 $newValue = $initialValue + ($initialValue * $percent);
                 $newValueMainCurrency = $initialValueMainCurrency + ($initialValueMainCurrency * $percent);
-                if (($cotation->update_method === CotationUpdateMethod::FIXED) || ($cotation->update_method === CotationUpdateMethod::MANUAL)) {
+                if (($cotation->update_method === ValuationUpdateMethod::FIXED) || ($cotation->update_method === ValuationUpdateMethod::MANUAL)) {
                     $newValue = $cotation->value;
                     $newValueMainCurrency = $cotation->value_main_currency;
                 }
@@ -56,13 +56,13 @@ class History extends Seeder
         }
     }
 
-    public function createTransfers(User $user)
+    public function createTransactions(User $user)
     {
         $source = Asset::where('name', 'Boursorama Compte courant')->first();
         $destination = Asset::where('name', 'Microsoft')->first();
 
-        Transfer::create([
-            'type' => TransferType::Transfer,
+        Transaction::create([
+            'type' => TransactionType::Transfer,
             'source_id' => $source->id,
             'destination_id' => $destination->id,
             'source_quantity' => 1200,
@@ -70,8 +70,8 @@ class History extends Seeder
             'date' => now()->subMonths(3),
             'user_id' => $user->id
         ]);
-        Transfer::create([
-            'type' => TransferType::Income,
+        Transaction::create([
+            'type' => TransactionType::Income,
             'destination_id' => $source->id,
             'destination_quantity' => 2200,
             'date' => now()->subMonths(4),

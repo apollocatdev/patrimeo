@@ -4,7 +4,7 @@ namespace App\Charts;
 
 use App\Models\Widget;
 use Illuminate\Support\Carbon;
-use App\Models\CotationHistory;
+use App\Models\ValuationHistory;
 
 abstract class AbstractChart
 {
@@ -67,7 +67,7 @@ abstract class AbstractChart
             case '1Y':
                 $startDate = now()->subYear();
             case 'Beginning':
-                $startDate = CotationHistory::orderBy('date', 'asc')->first()->date;
+                $startDate = ValuationHistory::orderBy('date', 'asc')->first()->date;
         }
         $endDate = now();
         $currentDate = $startDate->copy();

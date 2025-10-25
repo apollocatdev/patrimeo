@@ -13,7 +13,7 @@ enum WidgetEntity: string implements HasLabel
     public function getLabel(): string
     {
         return match ($this) {
-            self::COTATIONS => __('Cotations'),
+            self::VALUATIONS => __('Valuations'),
             self::ASSETS => __('Assets'),
         };
     }

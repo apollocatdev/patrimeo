@@ -16,7 +16,7 @@ Take control of your financial portfolio with Patrimeo's comprehensive suite of 
 - **Multi-Asset Support**: Track stocks, bonds, cryptocurrencies, cash accounts, and more
 - **Real-time Valuations**: Automatic price updates with multiple data sources
 - **Asset Organization**: Organize assets by envelopes (accounts) and asset classes
-- **Transfer Tracking**: Monitor income, expenses, and transfers between assets
+- **Transaction Tracking**: Monitor income, expenses, and transactions between assets
 - **Historical Data**: Complete transaction history and portfolio evolution tracking
 
 ### 📈 **Advanced Analytics & Dashboards**

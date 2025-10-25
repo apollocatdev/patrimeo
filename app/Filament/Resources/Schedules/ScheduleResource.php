@@ -121,9 +121,9 @@ class ScheduleResource extends Resource
                         return collect($state)->pluck('action')->join(', ');
                     }),
 
-                TextColumn::make('cotations_count')
-                    ->label(__('Cotations'))
-                    ->counts('cotations'),
+                TextColumn::make('valuations_count')
+                    ->label(__('Valuations'))
+                    ->counts('valuations'),
 
                 TextColumn::make('assets_count')
                     ->label(__('Assets'))

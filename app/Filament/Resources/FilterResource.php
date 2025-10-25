@@ -21,7 +21,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use App\Enums\Filters\FilterLogicOperator;
 use App\Enums\Filters\FilterRuleAssetType;
-use App\Enums\Filters\FilterRuleCotationType;
+use App\Enums\Filters\FilterRuleValuationType;
 use App\Enums\Filters\FilterRuleOperator;
 use App\Filament\Resources\FilterResource\Pages;
 
@@ -72,7 +72,7 @@ class FilterResource extends Resource
                                     return FilterRuleAssetType::class;
                                 }
                                 if ($entity === FilterEntity::COTATIONS) {
-                                    return FilterRuleCotationType::class;
+                                    return FilterRuleValuationType::class;
                                 }
                                 return [];
                             })
@@ -94,7 +94,7 @@ class FilterResource extends Resource
                                 }
 
                                 if ($entity === FilterEntity::COTATIONS && $type) {
-                                    $enumType = FilterRuleCotationType::tryFrom($type);
+                                    $enumType = FilterRuleValuationType::tryFrom($type);
                                     return $enumType && $enumType->isNumericRule();
                                 }
 
@@ -114,7 +114,7 @@ class FilterResource extends Resource
                                 }
 
                                 if ($entity === FilterEntity::COTATIONS && $type) {
-                                    $enumType = FilterRuleCotationType::tryFrom($type);
+                                    $enumType = FilterRuleValuationType::tryFrom($type);
                                     if ($enumType && $enumType->isNumericRule()) {
                                         return __('Value');
                                     }
@@ -135,7 +135,7 @@ class FilterResource extends Resource
                                 }
 
                                 if ($entity === FilterEntity::COTATIONS && $type) {
-                                    $enumType = FilterRuleCotationType::tryFrom($type);
+                                    $enumType = FilterRuleValuationType::tryFrom($type);
                                     if ($enumType && $enumType->isNumericRule()) {
                                         return __('Enter a single numeric value');
                                     }

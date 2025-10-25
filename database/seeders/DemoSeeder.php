@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Database\Seeders\Demo\Assets;
 use Database\Seeders\Demo\History;
-use Database\Seeders\Demo\Cotations;
+use Database\Seeders\Demo\Valuations;
 use Database\Seeders\Demo\Dashboards;
 use Database\Seeders\Demo\Taxonomies;
 use Database\Seeders\Demo\EnvelopClasses;
@@ -18,7 +18,7 @@ class DemoSeeder extends Seeder
     public function run(): void
     {
         $this->call([EnvelopClasses::class]);
-        $this->call([Cotations::class]);
+        $this->call([Valuations::class]);
         $this->call([Assets::class]);
         $this->call([Taxonomies::class]);
 

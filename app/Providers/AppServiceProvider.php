@@ -9,11 +9,11 @@ use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 use Filament\Support\Facades\FilamentAsset;
 use App\Models\Asset;
-use App\Models\Cotation;
+use App\Models\Valuation;
 use App\Models\Currency;
 use App\Models\Envelop;
 use App\Observers\AssetObserver;
-use App\Observers\CotationObserver;
+use App\Observers\ValuationObserver;
 use App\Observers\CurrencyObserver;
 use App\Observers\EnvelopObserver;
 use ApollocatDev\FilamentSettings\Facades\FilamentSettings;
@@ -21,7 +21,7 @@ use App\Settings\LocalizationSettings;
 use App\Settings\IntegrationsSettings;
 use App\Settings\EmailSettings;
 use App\Settings\VariousSettings;
-use App\Settings\CotationUpdateSettings;
+use App\Settings\ValuationUpdateSettings;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -51,7 +51,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Register model observers for automatic integrity checks
         Asset::observe(AssetObserver::class);
-        Cotation::observe(CotationObserver::class);
+        Valuation::observe(ValuationObserver::class);
         Currency::observe(CurrencyObserver::class);
         Envelop::observe(EnvelopObserver::class);
 
@@ -60,6 +60,6 @@ class AppServiceProvider extends ServiceProvider
         FilamentSettings::addSettings(IntegrationsSettings::class);
         FilamentSettings::addSettings(EmailSettings::class);
         FilamentSettings::addSettings(VariousSettings::class);
-        FilamentSettings::addSettings(CotationUpdateSettings::class);
+        FilamentSettings::addSettings(ValuationUpdateSettings::class);
     }
 }

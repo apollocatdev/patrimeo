@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Cache;
 use Filament\Forms\Components\TextInput;
 use App\Models\Envelop;
 use App\Models\AssetClass;
-use App\Models\Cotation;
+use App\Models\Valuation;
 use App\Models\Currency;
 
 class ImporterFinary implements ImporterInterface

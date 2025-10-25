@@ -5,7 +5,7 @@ namespace Tests\Unit;
 use Tests\TestCase;
 use App\Data\ImportRecord;
 use App\Models\User;
-use App\Models\Cotation;
+use App\Models\Valuation;
 use App\Models\Envelop;
 use App\Models\AssetClass;
 use App\Models\Currency;
@@ -71,4 +71,3 @@ class ImportMapperTest extends TestCase
         $this->assertSame($cot->id, $mapped[0]['mappings']['cotation']['existing_id']);
     }
 }
-

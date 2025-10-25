@@ -4,7 +4,7 @@
 namespace App\Helpers;
 
 use App\Models\Asset;
-use App\Models\Cotation;
+use App\Models\Valuation;
 use App\Data\WidgetFilterData;
 
 trait WidgetHelperTrait
@@ -16,7 +16,7 @@ trait WidgetHelperTrait
             case 'assets':
                 return Asset::query();
             case 'cotations':
-                return Cotation::query();
+                return Valuation::query();
             default:
                 return null;
         }

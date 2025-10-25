@@ -5,7 +5,7 @@ namespace App\Charts\Charts;
 use App\Enums\Widgets\WidgetType;
 use App\Helpers\Portfolio;
 use App\Charts\AbstractChart;
-use App\Models\CotationHistory;
+use App\Models\ValuationHistory;
 use App\Helpers\PortfolioCompute;
 use App\Enums\Widgets\WidgetTimePeriod;
 use App\Enums\Widgets\WidgetTimeInterval;

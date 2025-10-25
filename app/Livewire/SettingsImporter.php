@@ -7,7 +7,7 @@ use App\Models\Envelop;
 // Setting model removed - using filament-typehint-settings
 use Livewire\Component;
 use App\Enums\Importers;
-use App\Models\Cotation;
+use App\Models\Valuation;
 use App\Models\Currency;
 use App\Models\AssetClass;
 use Filament\Schemas\Schema;

@@ -44,8 +44,8 @@ class Notification extends Model
         }
 
         switch ($this->data['type']) {
-            case 'cotation_update':
-                return route('filament.admin.resources.cotation-updates.view', $this->data['cotation_update_id']);
+            case 'valuation_update':
+                return route('filament.admin.resources.valuation-updates.view', $this->data['valuation_update_id']);
             default:
                 return '#';
         }

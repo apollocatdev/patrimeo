@@ -4,11 +4,11 @@ namespace App\Jobs;
 
 use Exception;
 use App\Models\Asset;
-use App\Models\Cotation;
+use App\Models\Valuation;
 use App\Models\Currency;
-use App\Models\CotationHistory;
-use App\Exceptions\CotationException;
-use App\Helpers\Logs\LogCotations;
+use App\Models\ValuationHistory;
+use App\Exceptions\ValuationException;
+use App\Helpers\Logs\LogValuations;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
@@ -32,46 +32,46 @@ class UpdateAllValues implements ShouldQueue
     public function handle(): void
     {
         // Set user context for logging
-        LogCotations::setCurrentUserId($this->userId);
+        LogValuations::setCurrentUserId($this->userId);
 
         // Log job start
-        LogCotations::info("Starting UpdateAllValues job");
+        LogValuations::info("Starting UpdateAllValues job");
 
-        $cotations = Cotation::all();
-        foreach ($cotations as $cotation) {
-            if ($cotation->currency->main) {
-                $cotation->value_main_currency = $cotation->value;
-                $cotation->saveQuietly();
+        $valuations = Valuation::all();
+        foreach ($valuations as $valuation) {
+            if ($valuation->currency->main) {
+                $valuation->value_main_currency = $valuation->value;
+                $valuation->saveQuietly();
             } else {
-                if ($cotation->value === null) {
+                if ($valuation->value === null) {
                     continue;
                 }
                 try {
                     $mainCurrency = Currency::where('main', true)->first();
-                    $pair = $cotation->currency->symbol . $mainCurrency->symbol;
-                    $cotationMainCurrency = Cotation::where('name', $pair)->first();
-                    if ($cotationMainCurrency !== null) {
-                        $cotation->value_main_currency = $cotation->value * $cotationMainCurrency->value;
-                        $cotation->saveQuietly();
+                    $pair = $valuation->currency->symbol . $mainCurrency->symbol;
+                    $valuationMainCurrency = Valuation::where('name', $pair)->first();
+                    if ($valuationMainCurrency !== null) {
+                        $valuation->value_main_currency = $valuation->value * $valuationMainCurrency->value;
+                        $valuation->saveQuietly();
 
-                        $cotationHistory = CotationHistory::where('cotation_id', $cotation->id)->whereDate('date', today())->first();
-                        if ($cotationHistory === null) {
-                            CotationHistory::create([
-                                'cotation_id' => $cotation->id,
+                        $valuationHistory = ValuationHistory::where('valuation_id', $valuation->id)->whereDate('date', today())->first();
+                        if ($valuationHistory === null) {
+                            ValuationHistory::create([
+                                'valuation_id' => $valuation->id,
                                 'date' => today(),
-                                'value' => $cotation->value,
-                                'value_main_currency' => $cotation->value_main_currency,
-                                'user_id' => $cotation->user_id,
+                                'value' => $valuation->value,
+                                'value_main_currency' => $valuation->value_main_currency,
+                                'user_id' => $valuation->user_id,
                             ]);
                         } else {
-                            $cotationHistory->update([
-                                'value' => $cotation->value,
-                                'value_main_currency' => $cotation->value_main_currency,
+                            $valuationHistory->update([
+                                'value' => $valuation->value,
+                                'value_main_currency' => $valuation->value_main_currency,
                             ]);
                         }
                     }
                 } catch (Exception $e) {
-                    throw new CotationException($cotation, $e->getMessage());
+                    throw new ValuationException($valuation, $e->getMessage());
                 }
             }
         }
@@ -79,11 +79,11 @@ class UpdateAllValues implements ShouldQueue
         $assets = Asset::all();
         foreach ($assets as $asset) {
             $oldValue = $asset->value;
-            $asset->value = $asset->quantity * $asset->cotation->value_main_currency;
+            $asset->value = $asset->quantity * $asset->valuation->value_main_currency;
             $asset->saveQuietly();
 
             // Log asset value calculation
-            LogCotations::debug("Asset value calculated: {$asset->name} = {$asset->value} (was: {$oldValue})");
+            LogValuations::debug("Asset value calculated: {$asset->name} = {$asset->value} (was: {$oldValue})");
         }
     }
 }

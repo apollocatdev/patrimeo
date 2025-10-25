@@ -3,13 +3,13 @@
 namespace App\Helpers;
 
 use App\Models\Asset;
-use App\Models\Transfer;
+use App\Models\Transaction;
 use App\Models\Filter;
-use App\Enums\TransferType;
+use App\Enums\TransactionType;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
-use App\Helpers\PortfolioCompute\Transfers;
+use App\Helpers\PortfolioCompute\Transactions;
 use App\Helpers\PortfolioCompute\AssetValues;
 use App\Helpers\PortfolioCompute\AssetFilters;
 use App\Helpers\PortfolioCompute\PortfolioState;
@@ -43,19 +43,19 @@ class PortfolioCompute
         $value1 = $state1->value();
         $value2 = (new PortfolioState($date2, $this->filters))->value();
 
-        $transfers = (new Transfers())->getTransfersBetweenDates($state1->assets(), $date1, $date2);
+        $transactions = (new Transactions())->getTransactionsBetweenDates($state1->assets(), $date1, $date2);
 
         $currentStartDate = $date1;
         $amountToAdd = 0;
         $performances = [];
 
-        foreach ($transfers as $transfer) {
+        foreach ($transactions as $transaction) {
             $value1 = (new PortfolioState($currentStartDate, $this->filters))->value();
-            $value2 = (new PortfolioState($transfer->date->subDay(), $this->filters))->value();
+            $value2 = (new PortfolioState($transaction->date->subDay(), $this->filters))->value();
             $performances[] = ($value2 - $value1) / $value1;
 
-            $currentStartDate = $transfer->date;
-            $amountToAdd = $transfer->type === TransferType::Income ? $transfer->destination_quantity : -$transfer->source_quantity;
+            $currentStartDate = $transaction->date;
+            $amountToAdd = $transaction->type === TransactionType::Income ? $transaction->destination_quantity : -$transaction->source_quantity;
         }
         $value1 = (new PortfolioState($currentStartDate, $this->filters))->value() + $amountToAdd;
         $value2 = (new PortfolioState($date2, $this->filters))->value();
@@ -70,19 +70,19 @@ class PortfolioCompute
 
     public function getMWRPerformance(Carbon $date1, Carbon $date2)
     {
-        $transfers = Transfer::where('date', '>=', $date1)->where('date', '<=', $date2)->where('type', TransferType::Income)->orWhere('type', TransferType::Expense)->orderBy('date', 'asc')->get();
+        $transactions = Transaction::where('date', '>=', $date1)->where('date', '<=', $date2)->where('type', TransactionType::Income)->orWhere('type', TransactionType::Expense)->orderBy('date', 'asc')->get();
 
         $cf = [- (new PortfolioState($date1, $this->filters))->value()];
         $cfDates = [$date1];
 
-        foreach ($transfers as $transfer) {
-            if ($transfer->type === TransferType::Income) {
-                $cf[] = (new Transfers())->getTransferValue($transfer);
-                $cfDates[] = $transfer->date;
+        foreach ($transactions as $transaction) {
+            if ($transaction->type === TransactionType::Income) {
+                $cf[] = (new Transactions())->getTransactionValue($transaction);
+                $cfDates[] = $transaction->date;
             }
-            if ($transfer->type === TransferType::Expense) {
-                $cf[] = - (new Transfers())->getTransferValue($transfer);
-                $cfDates[] = $transfer->date;
+            if ($transaction->type === TransactionType::Expense) {
+                $cf[] = - (new Transactions())->getTransactionValue($transaction);
+                $cfDates[] = $transaction->date;
             }
         }
         $cf[] = (new PortfolioState($date2, $this->filters))->value();

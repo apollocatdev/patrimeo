@@ -7,13 +7,13 @@ use Filament\Support\Contracts\HasLabel;
 enum FilterEntity: string implements HasLabel
 {
     case ASSETS = 'assets';
-    case COTATIONS = 'cotations';
+    case VALUATIONS = 'valuations';
 
     public function getLabel(): string
     {
         return match ($this) {
             self::ASSETS => __('Assets'),
-            self::COTATIONS => __('Cotations'),
+            self::VALUATIONS => __('Valuations'),
         };
     }
 }

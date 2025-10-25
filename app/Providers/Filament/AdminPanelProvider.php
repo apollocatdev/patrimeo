@@ -23,10 +23,10 @@ use App\Filament\Resources\WidgetResource;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Navigation\NavigationBuilder;
 use App\Filament\Resources\EnvelopResource;
-use App\Filament\Resources\CotationResource;
+use App\Filament\Resources\ValuationResource;
 use App\Filament\Resources\CurrencyResource;
 use App\Filament\Resources\TaxonomyResource;
-use App\Filament\Resources\TransferResource;
+use App\Filament\Resources\TransactionResource;
 use App\Filament\Resources\DashboardResource;
 use App\Filament\Resources\AssetClassResource;
 use Resma\FilamentAwinTheme\FilamentAwinTheme;
@@ -36,8 +36,8 @@ use Illuminate\Session\Middleware\StartSession;
 use App\Filament\Resources\NotificationResource;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Filament\Http\Middleware\AuthenticateSession;
-use App\Filament\Resources\CotationUpdateResource;
-use App\Filament\Resources\CotationHistoryResource;
+use App\Filament\Resources\ValuationUpdateResource;
+use App\Filament\Resources\ValuationHistoryResource;
 use Filament\FontProviders\SpatieGoogleFontProvider;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use App\Filament\Resources\Schedules\ScheduleResource;
@@ -81,12 +81,12 @@ class AdminPanelProvider extends PanelProvider
                     ),
                     NavigationGroup::make('Portfolio')->items([
                         ...AssetResource::getNavigationItems(),
-                        ...TransferResource::getNavigationItems(),
+                        ...TransactionResource::getNavigationItems(),
                     ]),
-                    NavigationGroup::make('Cotations')->items([
-                        ...CotationResource::getNavigationItems(),
-                        ...CotationUpdateResource::getNavigationItems(),
-                        ...CotationHistoryResource::getNavigationItems(),
+                    NavigationGroup::make('Valuations')->items([
+                        ...ValuationResource::getNavigationItems(),
+                        ...ValuationUpdateResource::getNavigationItems(),
+                        ...ValuationHistoryResource::getNavigationItems(),
                     ]),
                     NavigationGroup::make('Configuration')->items([
                         ...AssetClassResource::getNavigationItems(),
@@ -116,7 +116,7 @@ class AdminPanelProvider extends PanelProvider
             )
             ->renderHook(
                 'panels::user-menu.before',
-                fn(): string => Blade::render('@livewire(\'cotations-update-button\')')
+                fn(): string => Blade::render('@livewire(\'valuations-update-button\')')
             )
             ->renderHook(
                 'panels::user-menu.before',

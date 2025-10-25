@@ -1,0 +1,239 @@
+<?php
+
+namespace App\Services\Transactions;
+
+use App\Models\Asset;
+use App\Models\Transaction;
+use App\Enums\TransactionType;
+use App\Services\TransactionsInterface;
+use App\Exceptions\TransactionsException;
+use App\Settings\IntegrationsSettings;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Illuminate\Support\Facades\Log;
+use ApollocatDev\FilamentSettings\Facades\FilamentSettings;
+
+class TransactionsWoob implements TransactionsInterface
+{
+    protected Asset $asset;
+
+    public function __construct(Asset $asset)
+    {
+        $this->asset = $asset;
+    }
+
+    public function getTransactions(): array
+    {
+        /** @var IntegrationsSettings $settings */
+        $settings = FilamentSettings::getSettingForUser(IntegrationsSettings::class, $this->asset->user_id);
+        $binaryPath = $settings->weboobPath;
+        $accountName = $this->asset->update_data['account_name'] ?? '';
+        $transactionCount = $this->asset->update_data['transaction_count'] ?? 20;
+
+        if (empty($accountName)) {
+            throw new TransactionsException(
+                $this->asset,
+                'Account name is required for woob transactions',
+                null,
+            );
+        }
+
+        if (empty($binaryPath)) {
+            throw new TransactionsException(
+                $this->asset,
+                'Woob binary path is not configured. Please set it in Settings > Various.',
+                null,
+            );
+        }
+
+        // Build the woob command
+        $command = sprintf(
+            '%s bank history -n %d %s -f json',
+            escapeshellarg($binaryPath),
+            (int) $transactionCount,
+            escapeshellarg($accountName)
+        );
+
+        $output = [];
+        $returnCode = 0;
+        exec($command, $output, $returnCode);
+
+        if ($returnCode !== 0) {
+            throw new TransactionsException(
+                $this->asset,
+                'Woob command failed with return code ' . $returnCode,
+                null,
+                'Return code: ' . $returnCode . ' | Output: ' . implode("\n", $output)
+            );
+        }
+
+        if (empty($output)) {
+            throw new TransactionsException(
+                $this->asset,
+                'Woob command returned no output',
+                null,
+                'Command: ' . $command
+            );
+        }
+
+        try {
+            $json = json_decode(implode("\n", $output), true);
+        } catch (\Exception $e) {
+            throw new TransactionsException(
+                $this->asset,
+                'Invalid JSON format from woob command',
+                null,
+                $e->getMessage() . ' | Output: ' . implode("\n", $output)
+            );
+        }
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new TransactionsException(
+                $this->asset,
+                'JSON decode error: ' . json_last_error_msg(),
+                null,
+                'Output: ' . implode("\n", $output)
+            );
+        }
+
+        if (!is_array($json)) {
+            throw new TransactionsException(
+                $this->asset,
+                'Woob command did not return an array',
+                null,
+                'Expected array, got: ' . gettype($json)
+            );
+        }
+
+        // Process and create transactions
+        $transactions = [];
+        $skippedDuplicates = 0;
+
+        foreach ($json as $transactionData) {
+            try {
+                $transaction = $this->createTransaction($transactionData);
+
+                // Check for duplicates including label comparison
+                if ($this->checkDuplicate($transaction)) {
+                    // Both date/quantities and label match, skip this transaction
+                    $skippedDuplicates++;
+                    continue;
+                }
+
+                $transaction->save();
+                $transactions[] = $transaction;
+            } catch (TransactionsException $e) {
+                // Re-throw TransactionsException as-is
+                throw $e;
+            } catch (\Exception $e) {
+                throw new TransactionsException(
+                    $this->asset,
+                    'Failed to create transaction: ' . $e->getMessage(),
+                    null,
+                    'Transaction data: ' . json_encode($transactionData)
+                );
+            }
+        }
+
+        // Log skipped duplicates for information
+        if ($skippedDuplicates > 0) {
+            Log::info("Skipped {$skippedDuplicates} duplicate transactions for asset {$this->asset->name}");
+        }
+
+        // Recompute the asset quantity based on the new transactions
+        if (!empty($transactions)) {
+            $this->asset->computeQuantity();
+        }
+
+        return $transactions;
+    }
+
+    protected function createTransaction(array $data): Transaction
+    {
+        // Validate required fields
+        if (empty($data['date']) || empty($data['amount']) || empty($data['label'])) {
+            throw new TransactionsException(
+                $this->asset,
+                'Missing required transaction fields',
+                null,
+                'Required: date, amount, label. Got: ' . json_encode($data)
+            );
+        }
+
+        // Parse amount and determine transaction type
+        $amount = (float) $data['amount'];
+        $transactionType = $amount < 0 ? TransactionType::Expense : TransactionType::Income;
+        $quantity = abs($amount);
+
+        // Parse date (woob returns Y-m-d format)
+        try {
+            $date = \Carbon\Carbon::createFromFormat('Y-m-d', $data['date']);
+        } catch (\Exception $e) {
+            throw new TransactionsException(
+                $this->asset,
+                'Invalid date format from woob',
+                null,
+                'Expected Y-m-d format, got: ' . $data['date']
+            );
+        }
+
+        // Create transaction record
+        $transaction = new Transaction();
+        $transaction->type = $transactionType;
+
+        if ($transactionType === TransactionType::Expense) {
+            $transaction->source_id = $this->asset->id;
+            $transaction->source_quantity = $quantity;
+            $transaction->destination_id = null;
+            $transaction->destination_quantity = null;
+        } else {
+            $transaction->source_id = null;
+            $transaction->source_quantity = null;
+            $transaction->destination_id = $this->asset->id;
+            $transaction->destination_quantity = $quantity;
+        }
+
+        $transaction->date = $date;
+        $transaction->comment = $data['label'];
+        $transaction->user_id = $this->asset->user_id;
+
+        return $transaction;
+    }
+
+    /**
+     * Check if a duplicate transaction already exists, including label comparison
+     */
+    protected function checkDuplicate(Transaction $transaction): bool
+    {
+        $query = Transaction::where('source_id', $transaction->source_id)
+            ->where('destination_id', $transaction->destination_id)
+            ->where('source_quantity', $transaction->source_quantity)
+            ->where('destination_quantity', $transaction->destination_quantity)
+            ->where('date', $transaction->date)
+            ->where('comment', $transaction->comment);
+
+        // If the transaction is already saved, exclude it from duplicate check
+        if ($transaction->exists) {
+            $query->where('id', '!=', $transaction->id);
+        }
+
+        return $query->exists();
+    }
+
+    public static function getFields(): array
+    {
+        return [
+            'account_name' => TextInput::make('account_name')
+                ->label(__('Account Name'))
+                ->helperText(__('Account identifier for woob (e.g., 005981201T@lcl)'))
+                ->required(),
+            'transaction_count' => TextInput::make('transaction_count')
+                ->label(__('Number of Transactions'))
+                ->helperText(__('Number of transactions to retrieve (default: 20)'))
+                ->numeric()
+                ->default(20)
+                ->minValue(1)
+                ->maxValue(100),
+        ];
+    }
+}

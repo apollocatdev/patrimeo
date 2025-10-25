@@ -6,7 +6,7 @@ use App\Models\Asset;
 use App\Models\Widget;
 use App\Enums\FilterType;
 use App\Enums\Widgets\WidgetType;
-use App\Models\CotationHistory;
+use App\Models\ValuationHistory;
 
 abstract class AbstractStat
 {
@@ -74,7 +74,7 @@ abstract class AbstractStat
             case '1Y':
                 return now()->subYear();
             case 'Beginning':
-                return CotationHistory::orderBy('date', 'asc')->first()->date;
+                return ValuationHistory::orderBy('date', 'asc')->first()->date;
         }
     }
 

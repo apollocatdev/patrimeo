@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Data\ImportRecord;
 use App\Models\AssetClass;
 use App\Models\Envelop;
-use App\Models\Cotation;
+use App\Models\Valuation;
 
 class ImportMapper
 {

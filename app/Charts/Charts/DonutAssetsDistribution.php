@@ -4,7 +4,7 @@ namespace App\Charts\Charts;
 
 use App\Models\Asset;
 use App\Models\Envelop;
-use App\Models\Cotation;
+use App\Models\Valuation;
 use App\Enums\Widgets\WidgetType;
 use App\Models\AssetClass;
 use App\Models\EnvelopType;
@@ -114,7 +114,7 @@ class DonutAssetsDistribution extends AbstractChart
                 return EnvelopType::all()->pluck('name');
                 break;
             case 'currency':
-                return Cotation::all()->pluck('currency');
+                return Valuation::all()->pluck('currency');
                 break;
             case 'taxonomy':
                 if (isset($this->widget->parameters['taxonomy'])) {

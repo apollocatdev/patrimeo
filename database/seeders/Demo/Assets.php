@@ -5,11 +5,11 @@ namespace Database\Seeders\Demo;
 use App\Models\User;
 use App\Models\Asset;
 use App\Models\Envelop;
-use App\Models\Cotation;
+use App\Models\Valuation;
 use App\Models\AssetClass;
 use Illuminate\Database\Seeder;
-use App\Enums\CotationUpdateMethod;
-use App\Enums\TransferUpdateMethod;
+use App\Enums\ValuationUpdateMethod;
+use App\Enums\TransactionUpdateMethod;
 
 class Assets extends Seeder
 {
@@ -42,7 +42,7 @@ class Assets extends Seeder
             $asset['envelop_id'] = $envelops[$asset['envelop']];
             $asset['cotation_id'] = $cotations[$asset['cotation']];
             $asset['class_id'] = $assetClasses[$asset['class']];
-            $asset['update_method'] = TransferUpdateMethod::MANUAL;
+            $asset['update_method'] = TransactionUpdateMethod::MANUAL;
 
             unset($asset['envelop']);
             unset($asset['cotation']);

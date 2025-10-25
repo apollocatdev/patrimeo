@@ -4,7 +4,7 @@ namespace App\Enums\Filters;
 
 use Filament\Support\Contracts\HasLabel;
 
-enum FilterRuleCotationType: string implements HasLabel
+enum FilterRuleValuationType: string implements HasLabel
 {
 
     case CURRENCY = 'currency';
