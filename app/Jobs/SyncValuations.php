@@ -105,7 +105,7 @@ class SyncValuations implements ShouldQueue
 
 
 
-    protected function sleepIfNeeded(Cotation $valuation): void
+    protected function sleepIfNeeded(Valuation $valuation): void
     {
         $rateLimiterKey = $valuation->update_method->getRateLimiterKey($valuation->update_data);
         if (! array_key_exists($rateLimiterKey, $this->rateLimiters)) {
@@ -120,7 +120,7 @@ class SyncValuations implements ShouldQueue
         }
     }
 
-    public function updateCotation(Cotation $valuation): Cotation
+    public function updateCotation(Valuation $valuation): Valuation
     {
         $valuationUpdate = ValuationUpdate::create([
             'valuation_id' => $valuation->id,
@@ -155,7 +155,7 @@ class SyncValuations implements ShouldQueue
             ]);
 
             // Log successful valuation update
-            LogValuations::info("Cotation updated: {$valuation->name} = {$valuation->value} ({$valuation->update_method->value})");
+            LogValuations::info("Valuation updated: {$valuation->name} = {$valuation->value} ({$valuation->update_method->value})");
         }
         if ($class === null) {
             if (($valuation->update_method === ValuationUpdateMethod::FIXED) || ($valuation->update_method === ValuationUpdateMethod::MANUAL)) {
@@ -169,11 +169,11 @@ class SyncValuations implements ShouldQueue
                 ]);
 
                 // Log successful valuation update for fixed/manual methods
-                LogValuations::info("Cotation updated: {$valuation->name} = {$valuation->value} ({$valuation->update_method->value})");
+                LogValuations::info("Valuation updated: {$valuation->name} = {$valuation->value} ({$valuation->update_method->value})");
             } else {
                 throw new ValuationException(
                     $valuation,
-                    'Cotation update method not found',
+                    'Valuation update method not found',
                     null,
                     null,
                     ['valuation_update_id' => $valuationUpdate->id, 'type' => 'valuation_update']
@@ -189,14 +189,14 @@ class SyncValuations implements ShouldQueue
 
         $errorType = $exception instanceof TimeoutExceededException ? 'timeout' : 'error';
 
-        LogValuations::error("Cotation sync job failed ({$errorType}): " . $exception->getMessage() ?? 'Unknown error', [
+        LogValuations::error("Valuation sync job failed ({$errorType}): " . $exception->getMessage() ?? 'Unknown error', [
             'exception' => $exception,
             'user_id' => $this->userId
         ]);
 
         Notification::createError(
             User::find($this->userId),
-            'Cotation Sync job failed (' . $errorType . ')',
+            'Valuation Sync job failed (' . $errorType . ')',
             $exception->getMessage() ?? 'Unknown error',
             []
         );
