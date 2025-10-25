@@ -61,11 +61,7 @@ class TransactionsCommandJson implements TransactionsInterface
         $command = $this->asset->update_data['command'] ?? '';
 
         if (empty($command)) {
-            throw new TransactionsException(
-                $this->asset,
-                'Some parameters are missing required for command-based transactions',
-                null,
-            );
+            throw new TransactionsException($this->asset, 'Some parameters are missing required for command-based transactions', null);
         }
 
         $output = [];
@@ -73,32 +69,17 @@ class TransactionsCommandJson implements TransactionsInterface
         exec($command, $output, $returnCode);
 
         if ($returnCode !== 0) {
-            throw new TransactionsException(
-                $this->asset,
-                'Command failed with return code ' . $returnCode,
-                null,
-                'Return code: ' . $returnCode . ' | Output: ' . implode("\n", $output)
-            );
+            throw new TransactionsException($this->asset, 'Command failed with return code ' . $returnCode, null, 'Return code: ' . $returnCode . ' | Output: ' . implode("\n", $output));
         }
 
         try {
             $json = json_decode(implode("\n", $output));
         } catch (\Exception $e) {
-            throw new TransactionsException(
-                $this->asset,
-                'Invalid JSON format',
-                null,
-                $e->getMessage()
-            );
+            throw new TransactionsException($this->asset, 'Invalid JSON format', null, $e->getMessage());
         }
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new TransactionsException(
-                $this->asset,
-                'JSON decode error: ' . json_last_error_msg(),
-                null,
-                'Output: ' . implode("\n", $output)
-            );
+            throw new TransactionsException($this->asset, 'JSON decode error: ' . json_last_error_msg(), null, 'Output: ' . implode("\n", $output));
         }
 
         // Convert to JSON-decoded object for validation
@@ -114,12 +95,7 @@ class TransactionsCommandJson implements TransactionsInterface
                 $errors[] = $error['property'] . ': ' . $error['message'];
             }
 
-            throw new TransactionsException(
-                $this->asset,
-                'JSON validation failed',
-                null,
-                'Validation errors: ' . implode('; ', $errors)
-            );
+            throw new TransactionsException($this->asset, 'JSON validation failed', null, 'Validation errors: ' . implode('; ', $errors));
         }
 
         // Get duplicate checking configuration once
@@ -138,12 +114,7 @@ class TransactionsCommandJson implements TransactionsInterface
                 // Check for duplicates if enabled
                 if ($checkDuplicates && $transfer->checkDuplicate()) {
                     if ($duplicateBehavior === 'error') {
-                        throw new TransactionsException(
-                            $this->asset,
-                            'Duplicate transaction detected',
-                            null,
-                            'A transaction with the same source, destination, quantities, and date already exists'
-                        );
+                        throw new TransactionsException($this->asset, 'Duplicate transaction detected', null, 'A transaction with the same source, destination, quantities, and date already exists');
                     } else {
                         // Skip this transfer and continue with others
                         $skippedDuplicates[] = $transferData;
@@ -154,12 +125,7 @@ class TransactionsCommandJson implements TransactionsInterface
                 $transfer->save();
                 $transfers[] = $transfer;
             } catch (\Exception $e) {
-                throw new TransactionsException(
-                    $this->asset,
-                    'Failed to create transaction: ' . $e->getMessage(),
-                    null,
-                    'Transaction data: ' . json_encode($transferData)
-                );
+                throw new TransactionsException($this->asset, 'Failed to create transaction: ' . $e->getMessage(), null, 'Transaction data: ' . json_encode($transferData));
             }
         }
 
@@ -175,12 +141,7 @@ class TransactionsCommandJson implements TransactionsInterface
         try {
             $type = TransactionType::from($data['type']);
         } catch (\ValueError $e) {
-            throw new TransactionsException(
-                $this->asset,
-                'Invalid transaction type: ' . $data['type'],
-                null,
-                'Available types: ' . implode(', ', array_map(fn($case) => $case->value, TransactionType::cases()))
-            );
+            throw new TransactionsException($this->asset, 'Invalid transaction type: ' . $data['type'], null, 'Available types: ' . implode(', ', array_map(fn($case) => $case->value, TransactionType::cases())));
         }
 
         // Resolve source asset by name if provided
@@ -191,12 +152,7 @@ class TransactionsCommandJson implements TransactionsInterface
                 ->first();
 
             if (!$sourceAsset) {
-                throw new TransactionsException(
-                    $this->asset,
-                    'Source asset not found: ' . $data['source'],
-                    null,
-                    'Make sure the asset name exists and belongs to your account'
-                );
+                throw new TransactionsException($this->asset, 'Source asset not found: ' . $data['source'], null, 'Make sure the asset name exists and belongs to your account');
             }
             $sourceId = $sourceAsset->id;
         }
@@ -209,12 +165,7 @@ class TransactionsCommandJson implements TransactionsInterface
                 ->first();
 
             if (!$destinationAsset) {
-                throw new TransactionsException(
-                    $this->asset,
-                    'Destination asset not found: ' . $data['destination'],
-                    null,
-                    'Make sure the asset name exists and belongs to your account'
-                );
+                throw new TransactionsException($this->asset, 'Destination asset not found: ' . $data['destination'], null, 'Make sure the asset name exists and belongs to your account');
             }
             $destinationId = $destinationAsset->id;
         }

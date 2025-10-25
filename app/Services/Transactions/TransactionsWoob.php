@@ -31,19 +31,11 @@ class TransactionsWoob implements TransactionsInterface
         $transactionCount = $this->asset->update_data['transaction_count'] ?? 20;
 
         if (empty($accountName)) {
-            throw new TransactionsException(
-                $this->asset,
-                'Account name is required for woob transactions',
-                null,
-            );
+            throw new TransactionsException($this->asset, 'Account name is required for woob transactions', null);
         }
 
         if (empty($binaryPath)) {
-            throw new TransactionsException(
-                $this->asset,
-                'Woob binary path is not configured. Please set it in Settings > Various.',
-                null,
-            );
+            throw new TransactionsException($this->asset, 'Woob binary path is not configured. Please set it in Settings > Various.', null);
         }
 
         // Build the woob command
@@ -59,50 +51,25 @@ class TransactionsWoob implements TransactionsInterface
         exec($command, $output, $returnCode);
 
         if ($returnCode !== 0) {
-            throw new TransactionsException(
-                $this->asset,
-                'Woob command failed with return code ' . $returnCode,
-                null,
-                'Return code: ' . $returnCode . ' | Output: ' . implode("\n", $output)
-            );
+            throw new TransactionsException($this->asset, 'Woob command failed with return code ' . $returnCode, null, 'Return code: ' . $returnCode . ' | Output: ' . implode("\n", $output));
         }
 
         if (empty($output)) {
-            throw new TransactionsException(
-                $this->asset,
-                'Woob command returned no output',
-                null,
-                'Command: ' . $command
-            );
+            throw new TransactionsException($this->asset, 'Woob command returned no output', null, 'Command: ' . $command);
         }
 
         try {
             $json = json_decode(implode("\n", $output), true);
         } catch (\Exception $e) {
-            throw new TransactionsException(
-                $this->asset,
-                'Invalid JSON format from woob command',
-                null,
-                $e->getMessage() . ' | Output: ' . implode("\n", $output)
-            );
+            throw new TransactionsException($this->asset, 'Invalid JSON format from woob command', null, $e->getMessage() . ' | Output: ' . implode("\n", $output));
         }
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new TransactionsException(
-                $this->asset,
-                'JSON decode error: ' . json_last_error_msg(),
-                null,
-                'Output: ' . implode("\n", $output)
-            );
+            throw new TransactionsException($this->asset, 'JSON decode error: ' . json_last_error_msg(), null, 'Output: ' . implode("\n", $output));
         }
 
         if (!is_array($json)) {
-            throw new TransactionsException(
-                $this->asset,
-                'Woob command did not return an array',
-                null,
-                'Expected array, got: ' . gettype($json)
-            );
+            throw new TransactionsException($this->asset, 'Woob command did not return an array', null, 'Expected array, got: ' . gettype($json));
         }
 
         // Process and create transactions
@@ -124,12 +91,7 @@ class TransactionsWoob implements TransactionsInterface
                 // Re-throw TransactionsException as-is
                 throw $e;
             } catch (\Exception $e) {
-                throw new TransactionsException(
-                    $this->asset,
-                    'Failed to create transaction: ' . $e->getMessage(),
-                    null,
-                    'Transaction data: ' . json_encode($transactionData)
-                );
+                throw new TransactionsException($this->asset, 'Failed to create transaction: ' . $e->getMessage(), null, 'Transaction data: ' . json_encode($transactionData));
             }
         }
 
@@ -143,12 +105,7 @@ class TransactionsWoob implements TransactionsInterface
     {
         // Validate required fields
         if (empty($data['date']) || empty($data['amount']) || empty($data['label'])) {
-            throw new TransactionsException(
-                $this->asset,
-                'Missing required transaction fields',
-                null,
-                'Required: date, amount, label. Got: ' . json_encode($data)
-            );
+            throw new TransactionsException($this->asset, 'Missing required transaction fields', null, 'Required: date, amount, label. Got: ' . json_encode($data));
         }
 
         // Parse amount and determine transaction type
@@ -160,12 +117,7 @@ class TransactionsWoob implements TransactionsInterface
         try {
             $date = \Carbon\Carbon::createFromFormat('Y-m-d', $data['date']);
         } catch (\Exception $e) {
-            throw new TransactionsException(
-                $this->asset,
-                'Invalid date format from woob',
-                null,
-                'Expected Y-m-d format, got: ' . $data['date']
-            );
+            throw new TransactionsException($this->asset, 'Invalid date format from woob', null, 'Expected Y-m-d format, got: ' . $data['date']);
         }
         // Create transaction record
         $transaction = Transaction::createTransaction($transactionType, $date, $this->asset, null, $quantity, $data['label'], false);

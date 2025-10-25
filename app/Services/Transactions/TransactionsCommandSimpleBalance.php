@@ -24,11 +24,7 @@ class TransactionsCommandSimpleBalance implements TransactionsInterface
         $command = $this->asset->update_data['command'] ?? '';
 
         if (empty($command)) {
-            throw new TransactionsException(
-                $this->asset,
-                'Command parameter is missing required for simple balance transactions',
-                null,
-            );
+            throw new TransactionsException($this->asset, 'Command parameter is missing required for simple balance transactions', null);
         }
 
         $output = [];
@@ -36,33 +32,18 @@ class TransactionsCommandSimpleBalance implements TransactionsInterface
         exec($command, $output, $returnCode);
 
         if ($returnCode !== 0) {
-            throw new TransactionsException(
-                $this->asset,
-                'Command failed with return code ' . $returnCode,
-                null,
-                'Return code: ' . $returnCode . ' | Output: ' . implode("\n", $output)
-            );
+            throw new TransactionsException($this->asset, 'Command failed with return code ' . $returnCode, null, 'Return code: ' . $returnCode . ' | Output: ' . implode("\n", $output));
         }
 
         if (empty($output)) {
-            throw new TransactionsException(
-                $this->asset,
-                'Command returned no output',
-                null,
-                'Expected a numeric value representing the current balance'
-            );
+            throw new TransactionsException($this->asset, 'Command returned no output', null, 'Expected a numeric value representing the current balance');
         }
 
         // Get the first line of output and convert to float
         $balanceString = trim($output[0]);
 
         if (!is_numeric($balanceString)) {
-            throw new TransactionsException(
-                $this->asset,
-                'Command output is not numeric',
-                null,
-                'Expected numeric value, got: ' . $balanceString
-            );
+            throw new TransactionsException($this->asset, 'Command output is not numeric', null, 'Expected numeric value, got: ' . $balanceString);
         }
 
         $currentBalance = (float) $balanceString;
@@ -105,12 +86,7 @@ class TransactionsCommandSimpleBalance implements TransactionsInterface
             // Compute the new quantity based on transactions
             $this->asset->computeQuantity();
         } catch (\Exception $e) {
-            throw new TransactionsException(
-                $this->asset,
-                'Failed to create transaction: ' . $e->getMessage(),
-                null,
-                'Balance: ' . $currentBalance . ', Asset quantity: ' . $assetQuantity . ', Difference: ' . $difference
-            );
+            throw new TransactionsException($this->asset, 'Failed to create transaction: ' . $e->getMessage(), null, 'Balance: ' . $currentBalance . ', Asset quantity: ' . $assetQuantity . ', Difference: ' . $difference);
         }
     }
 

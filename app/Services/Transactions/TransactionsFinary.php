@@ -30,12 +30,7 @@ class TransactionsFinary implements TransactionsInterface
         $assetType = $this->asset->update_data['asset_type'] ?? '';
 
         if (empty($objectId) || empty($assetType)) {
-            throw new TransactionsException(
-                $this->asset,
-                'Object ID and asset type are required for Finary transactions',
-                null,
-                'Object ID: ' . $objectId . ', Asset Type: ' . $assetType
-            );
+            throw new TransactionsException($this->asset, 'Object ID and asset type are required for Finary transactions', null, 'Object ID: ' . $objectId . ', Asset Type: ' . $assetType);
         }
 
         // Validate Finary credentials
@@ -45,12 +40,7 @@ class TransactionsFinary implements TransactionsInterface
         $finaryQuantity = $this->getFinaryQuantity($assetType, $objectId, $credentials);
 
         if ($finaryQuantity === null) {
-            throw new TransactionsException(
-                $this->asset,
-                'Could not retrieve quantity from Finary for the specified object',
-                null,
-                'Object ID: ' . $objectId . ', Asset Type: ' . $assetType
-            );
+            throw new TransactionsException($this->asset, 'Could not retrieve quantity from Finary for the specified object', null, 'Object ID: ' . $objectId . ', Asset Type: ' . $assetType);
         }
 
         $assetQuantity = $this->asset->quantity ?? 0;
@@ -92,12 +82,7 @@ class TransactionsFinary implements TransactionsInterface
             // Compute the new quantity based on transactions
             $this->asset->computeQuantity();
         } catch (\Exception $e) {
-            throw new TransactionsException(
-                $this->asset,
-                'Failed to create transaction: ' . $e->getMessage(),
-                null,
-                'Finary quantity: ' . $finaryQuantity . ', Asset quantity: ' . $assetQuantity . ', Difference: ' . $difference
-            );
+            throw new TransactionsException($this->asset, 'Failed to create transaction: ' . $e->getMessage(), null, 'Finary quantity: ' . $finaryQuantity . ', Asset quantity: ' . $assetQuantity . ', Difference: ' . $difference);
         }
     }
 
@@ -106,34 +91,19 @@ class TransactionsFinary implements TransactionsInterface
         $url = $this->getFinaryUrl($assetType);
 
         if (!$url) {
-            throw new TransactionsException(
-                $this->asset,
-                'Invalid asset type for Finary transactions',
-                null,
-                'Asset type: ' . $assetType
-            );
+            throw new TransactionsException($this->asset, 'Invalid asset type for Finary transactions', null, 'Asset type: ' . $assetType);
         }
 
         $response = Http::get($url . '&sharing_link_id=' . $credentials['sharing_link'] . '&access_code=' . $credentials['secure_code']);
 
         if ($response->status() !== 200) {
-            throw new TransactionsException(
-                $this->asset,
-                'Failed to retrieve data from Finary API',
-                null,
-                'HTTP status: ' . $response->status() . ' | URL: ' . $url
-            );
+            throw new TransactionsException($this->asset, 'Failed to retrieve data from Finary API', null, 'HTTP status: ' . $response->status() . ' | URL: ' . $url);
         }
 
         $data = $response->json();
 
         if (!isset($data['result'])) {
-            throw new TransactionsException(
-                $this->asset,
-                'Invalid response format from Finary API',
-                null,
-                'Response: ' . json_encode($data)
-            );
+            throw new TransactionsException($this->asset, 'Invalid response format from Finary API', null, 'Response: ' . json_encode($data));
         }
 
         return $this->extractQuantityFromResponse($assetType, $data['result'], $objectId);
