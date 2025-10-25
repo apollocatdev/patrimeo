@@ -46,6 +46,7 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         Collection::macro('dataGet', function ($key, $default = null) {
+            /** @var Collection $this */
             return collect(data_get($this->items, $key, $default));
         });
 
