@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Services\Transfers;
+namespace App\Services\Transactions;
 
 use App\Models\Asset;
-use App\Models\Transfer;
-use App\Enums\TransferType;
-use App\Services\TransfersInterface;
-use App\Exceptions\TransfersException;
+use App\Models\Transaction;
+use App\Enums\TransactionType;
+use App\Services\TransactionsInterface;
+use App\Exceptions\TransactionsException;
 use App\Helpers\FinaryCredentialsTrait;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-class TransfersFinary implements TransfersInterface
+class TransactionsFinary implements TransactionsInterface
 {
     use FinaryCredentialsTrait;
 
@@ -24,15 +24,15 @@ class TransfersFinary implements TransfersInterface
         $this->asset = $asset;
     }
 
-    public function getTransfers(): array
+    public function saveTransactions(): void
     {
         $objectId = $this->asset->update_data['object_id'] ?? '';
         $assetType = $this->asset->update_data['asset_type'] ?? '';
 
         if (empty($objectId) || empty($assetType)) {
-            throw new TransfersException(
+            throw new TransactionsException(
                 $this->asset,
-                'Object ID and asset type are required for Finary transfers',
+                'Object ID and asset type are required for Finary transactions',
                 null,
                 'Object ID: ' . $objectId . ', Asset Type: ' . $assetType
             );
@@ -45,7 +45,7 @@ class TransfersFinary implements TransfersInterface
         $finaryQuantity = $this->getFinaryQuantity($assetType, $objectId, $credentials);
 
         if ($finaryQuantity === null) {
-            throw new TransfersException(
+            throw new TransactionsException(
                 $this->asset,
                 'Could not retrieve quantity from Finary for the specified object',
                 null,
@@ -56,20 +56,20 @@ class TransfersFinary implements TransfersInterface
         $assetQuantity = $this->asset->quantity ?? 0;
         $difference = $finaryQuantity - $assetQuantity;
 
-        // If no difference, no transfer needed
+        // If no difference, no transaction needed
         if (abs($difference) < 0.01) {
-            return [];
+            return;
         }
 
         // Determine transfer type and quantities
         if ($difference > 0) {
             // Finary quantity is higher than asset quantity - income transfer
-            $transferType = TransferType::Income;
+            $transferType = TransactionType::Income;
             $destinationQuantity = $difference;
             $sourceQuantity = null;
         } else {
             // Finary quantity is lower than asset quantity - expense transfer
-            $transferType = TransferType::Expense;
+            $transferType = TransactionType::Expense;
             $sourceQuantity = abs($difference);
             $destinationQuantity = null;
         }
@@ -77,11 +77,11 @@ class TransfersFinary implements TransfersInterface
         try {
             $currentDateTime = now();
 
-            $transfer = new Transfer();
+            $transfer = new Transaction();
             $transfer->type = $transferType;
-            $transfer->source_id = $transferType === TransferType::Expense ? $this->asset->id : null;
+            $transfer->source_id = $transferType === TransactionType::Expense ? $this->asset->id : null;
             $transfer->source_quantity = $sourceQuantity;
-            $transfer->destination_id = $transferType === TransferType::Income ? $this->asset->id : null;
+            $transfer->destination_id = $transferType === TransactionType::Income ? $this->asset->id : null;
             $transfer->destination_quantity = $destinationQuantity;
             $transfer->date = $currentDateTime;
             $transfer->comment = 'Auto-generated from Finary sync';
@@ -89,14 +89,12 @@ class TransfersFinary implements TransfersInterface
 
             $transfer->save();
 
-            // Compute the new quantity based on transfers
+            // Compute the new quantity based on transactions
             $this->asset->computeQuantity();
-
-            return [$transfer];
         } catch (\Exception $e) {
-            throw new TransfersException(
+            throw new TransactionsException(
                 $this->asset,
-                'Failed to create transfer: ' . $e->getMessage(),
+                'Failed to create transaction: ' . $e->getMessage(),
                 null,
                 'Finary quantity: ' . $finaryQuantity . ', Asset quantity: ' . $assetQuantity . ', Difference: ' . $difference
             );
@@ -108,9 +106,9 @@ class TransfersFinary implements TransfersInterface
         $url = $this->getFinaryUrl($assetType);
 
         if (!$url) {
-            throw new TransfersException(
+            throw new TransactionsException(
                 $this->asset,
-                'Invalid asset type for Finary transfers',
+                'Invalid asset type for Finary transactions',
                 null,
                 'Asset type: ' . $assetType
             );
@@ -119,7 +117,7 @@ class TransfersFinary implements TransfersInterface
         $response = Http::get($url . '&sharing_link_id=' . $credentials['sharing_link'] . '&access_code=' . $credentials['secure_code']);
 
         if ($response->status() !== 200) {
-            throw new TransfersException(
+            throw new TransactionsException(
                 $this->asset,
                 'Failed to retrieve data from Finary API',
                 null,
@@ -130,7 +128,7 @@ class TransfersFinary implements TransfersInterface
         $data = $response->json();
 
         if (!isset($data['result'])) {
-            throw new TransfersException(
+            throw new TransactionsException(
                 $this->asset,
                 'Invalid response format from Finary API',
                 null,

@@ -49,13 +49,9 @@ class Asset extends Model
 
     public function computeQuantity(): void
     {
-        // Get all transactions that occurred after the last_update
-        $transactions = Transaction::where('date', '>', $this->last_update)
-            ->orderBy('date')
-            ->get();
+        $transactions = Transaction::where('reconciled', true)->get();
 
         $newQuantity = $this->quantity;
-        $lastTransactionDate = null;
 
         foreach ($transactions as $transaction) {
             // If this asset is the source, subtract the quantity
@@ -67,19 +63,17 @@ class Asset extends Model
             if ($transaction->destination_id === $this->id) {
                 $newQuantity += $transaction->destination_quantity ?? 0;
             }
-
-            // Track the last transaction date
-            if (!$lastTransactionDate || $transaction->date > $lastTransactionDate) {
-                $lastTransactionDate = $transaction->date;
-            }
         }
 
         // Update the asset quantity and last_update
-        if ($lastTransactionDate !== null) {
-            $this->last_update = $lastTransactionDate;
-        }
+        $this->last_update = now();
         $this->quantity = $newQuantity;
         $this->save();
+
+        foreach ($transactions as $transaction) {
+            $transaction->reconciled = true;
+            $transaction->save();
+        }
     }
 
     /**

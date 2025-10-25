@@ -15,12 +15,12 @@ interface TransactionsInterface
     public function __construct(Asset $asset);
 
     /**
-     * Get the current transactions     
+     * Save the current transactions     
      * 
-     * @return array
+     * @return void
      * @throws TransactionsException
      */
-    public function getTransactions(): array;
+    public function saveTransactions(): void;
 
     /**
      * Get the fields for the asset.

@@ -103,13 +103,11 @@ class SyncTransactions implements ShouldQueue
 
         if ($class !== null) {
             try {
-                $transactions = (new $class($asset))->getTransactions();
+                (new $class($asset))->saveTransactions();
 
-                // Update the asset's last_update timestamp
-                $asset->last_update = now();
-                $asset->save();
+                $asset->computeQuantity();
 
-                LogTransactions::info("Updated transactions for asset {$asset->name}: " . count($transactions) . " transactions processed");
+                LogTransactions::info("Updated transactions for asset {$asset->name}");
             } catch (TransactionsException $e) {
                 // Re-throw TransactionsException as-is since it already has all the details
                 throw $e;

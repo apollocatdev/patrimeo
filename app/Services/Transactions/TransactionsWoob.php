@@ -22,7 +22,7 @@ class TransactionsWoob implements TransactionsInterface
         $this->asset = $asset;
     }
 
-    public function getTransactions(): array
+    public function saveTransactions(): void
     {
         /** @var IntegrationsSettings $settings */
         $settings = FilamentSettings::getSettingForUser(IntegrationsSettings::class, $this->asset->user_id);
@@ -106,7 +106,6 @@ class TransactionsWoob implements TransactionsInterface
         }
 
         // Process and create transactions
-        $transactions = [];
         $skippedDuplicates = 0;
 
         foreach ($json as $transactionData) {
@@ -114,14 +113,13 @@ class TransactionsWoob implements TransactionsInterface
                 $transaction = $this->createTransaction($transactionData);
 
                 // Check for duplicates including label comparison
-                if ($this->checkDuplicate($transaction)) {
+                if ($transaction->checkDuplicate()) {
                     // Both date/quantities and label match, skip this transaction
                     $skippedDuplicates++;
                     continue;
                 }
 
                 $transaction->save();
-                $transactions[] = $transaction;
             } catch (TransactionsException $e) {
                 // Re-throw TransactionsException as-is
                 throw $e;
@@ -139,13 +137,6 @@ class TransactionsWoob implements TransactionsInterface
         if ($skippedDuplicates > 0) {
             Log::info("Skipped {$skippedDuplicates} duplicate transactions for asset {$this->asset->name}");
         }
-
-        // Recompute the asset quantity based on the new transactions
-        if (!empty($transactions)) {
-            $this->asset->computeQuantity();
-        }
-
-        return $transactions;
     }
 
     protected function createTransaction(array $data): Transaction
@@ -176,48 +167,9 @@ class TransactionsWoob implements TransactionsInterface
                 'Expected Y-m-d format, got: ' . $data['date']
             );
         }
-
         // Create transaction record
-        $transaction = new Transaction();
-        $transaction->type = $transactionType;
-
-        if ($transactionType === TransactionType::Expense) {
-            $transaction->source_id = $this->asset->id;
-            $transaction->source_quantity = $quantity;
-            $transaction->destination_id = null;
-            $transaction->destination_quantity = null;
-        } else {
-            $transaction->source_id = null;
-            $transaction->source_quantity = null;
-            $transaction->destination_id = $this->asset->id;
-            $transaction->destination_quantity = $quantity;
-        }
-
-        $transaction->date = $date;
-        $transaction->comment = $data['label'];
-        $transaction->user_id = $this->asset->user_id;
-
+        $transaction = Transaction::createTransaction($transactionType, $date, $this->asset, null, $quantity, $data['label'], false);
         return $transaction;
-    }
-
-    /**
-     * Check if a duplicate transaction already exists, including label comparison
-     */
-    protected function checkDuplicate(Transaction $transaction): bool
-    {
-        $query = Transaction::where('source_id', $transaction->source_id)
-            ->where('destination_id', $transaction->destination_id)
-            ->where('source_quantity', $transaction->source_quantity)
-            ->where('destination_quantity', $transaction->destination_quantity)
-            ->where('date', $transaction->date)
-            ->where('comment', $transaction->comment);
-
-        // If the transaction is already saved, exclude it from duplicate check
-        if ($transaction->exists) {
-            $query->where('id', '!=', $transaction->id);
-        }
-
-        return $query->exists();
     }
 
     public static function getFields(): array

@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Services\Transfers;
+namespace App\Services\Transactions;
 
 use App\Models\Asset;
-use App\Models\Transfer;
-use App\Enums\TransferType;
-use App\Services\TransfersInterface;
-use App\Exceptions\TransfersException;
+use App\Models\Transaction;
+use App\Enums\TransactionType;
+use App\Services\TransactionsInterface;
+use App\Exceptions\TransactionsException;
 use Filament\Forms\Components\TextInput;
 use JsonSchema\Validator;
 use JsonSchema\Constraints\Constraint;
 use Illuminate\Support\Facades\Log;
 
-class TransfersCommandJson implements TransfersInterface
+class TransactionsCommandJson implements TransactionsInterface
 {
     protected Asset $asset;
     protected string $jsonSchema;
@@ -22,7 +22,7 @@ class TransfersCommandJson implements TransfersInterface
         $this->asset = $asset;
 
         // Get enum values dynamically
-        $transferTypes = array_map(fn($case) => $case->value, TransferType::cases());
+        $transferTypes = array_map(fn($case) => $case->value, TransactionType::cases());
 
         $this->jsonSchema = json_encode([
             '$schema' => 'http://json-schema.org/draft-07/schema#',
@@ -56,14 +56,14 @@ class TransfersCommandJson implements TransfersInterface
 
 
 
-    public function getTransfers(): array
+    public function saveTransactions(): void
     {
         $command = $this->asset->update_data['command'] ?? '';
 
         if (empty($command)) {
-            throw new TransfersException(
+            throw new TransactionsException(
                 $this->asset,
-                'Some parameters are missing required for command-based transfers',
+                'Some parameters are missing required for command-based transactions',
                 null,
             );
         }
@@ -73,7 +73,7 @@ class TransfersCommandJson implements TransfersInterface
         exec($command, $output, $returnCode);
 
         if ($returnCode !== 0) {
-            throw new TransfersException(
+            throw new TransactionsException(
                 $this->asset,
                 'Command failed with return code ' . $returnCode,
                 null,
@@ -84,7 +84,7 @@ class TransfersCommandJson implements TransfersInterface
         try {
             $json = json_decode(implode("\n", $output));
         } catch (\Exception $e) {
-            throw new TransfersException(
+            throw new TransactionsException(
                 $this->asset,
                 'Invalid JSON format',
                 null,
@@ -93,7 +93,7 @@ class TransfersCommandJson implements TransfersInterface
         }
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new TransfersException(
+            throw new TransactionsException(
                 $this->asset,
                 'JSON decode error: ' . json_last_error_msg(),
                 null,
@@ -114,7 +114,7 @@ class TransfersCommandJson implements TransfersInterface
                 $errors[] = $error['property'] . ': ' . $error['message'];
             }
 
-            throw new TransfersException(
+            throw new TransactionsException(
                 $this->asset,
                 'JSON validation failed',
                 null,
@@ -133,16 +133,16 @@ class TransfersCommandJson implements TransfersInterface
         foreach ($json as $transferData) {
             $transferData = (array) $transferData;
             try {
-                $transfer = $this->createTransfer($transferData);
+                $transfer = $this->createTransaction($transferData);
 
                 // Check for duplicates if enabled
                 if ($checkDuplicates && $transfer->checkDuplicate()) {
                     if ($duplicateBehavior === 'error') {
-                        throw new TransfersException(
+                        throw new TransactionsException(
                             $this->asset,
-                            'Duplicate transfer detected',
+                            'Duplicate transaction detected',
                             null,
-                            'A transfer with the same source, destination, quantities, and date already exists'
+                            'A transaction with the same source, destination, quantities, and date already exists'
                         );
                     } else {
                         // Skip this transfer and continue with others
@@ -154,34 +154,32 @@ class TransfersCommandJson implements TransfersInterface
                 $transfer->save();
                 $transfers[] = $transfer;
             } catch (\Exception $e) {
-                throw new TransfersException(
+                throw new TransactionsException(
                     $this->asset,
-                    'Failed to create transfer: ' . $e->getMessage(),
+                    'Failed to create transaction: ' . $e->getMessage(),
                     null,
-                    'Transfer data: ' . json_encode($transferData)
+                    'Transaction data: ' . json_encode($transferData)
                 );
             }
         }
 
-        // Recompute the asset quantity based on the new transfers
+        // Recompute the asset quantity based on the new transactions
         if (!empty($transfers)) {
             $this->asset->computeQuantity();
         }
-
-        return $transfers;
     }
 
-    protected function createTransfer(array $data): Transfer
+    protected function createTransaction(array $data): Transaction
     {
         // Validate TransferType
         try {
-            $type = TransferType::from($data['type']);
+            $type = TransactionType::from($data['type']);
         } catch (\ValueError $e) {
-            throw new TransfersException(
+            throw new TransactionsException(
                 $this->asset,
-                'Invalid transfer type: ' . $data['type'],
+                'Invalid transaction type: ' . $data['type'],
                 null,
-                'Available types: ' . implode(', ', array_map(fn($case) => $case->value, TransferType::cases()))
+                'Available types: ' . implode(', ', array_map(fn($case) => $case->value, TransactionType::cases()))
             );
         }
 
@@ -193,7 +191,7 @@ class TransfersCommandJson implements TransfersInterface
                 ->first();
 
             if (!$sourceAsset) {
-                throw new TransfersException(
+                throw new TransactionsException(
                     $this->asset,
                     'Source asset not found: ' . $data['source'],
                     null,
@@ -211,7 +209,7 @@ class TransfersCommandJson implements TransfersInterface
                 ->first();
 
             if (!$destinationAsset) {
-                throw new TransfersException(
+                throw new TransactionsException(
                     $this->asset,
                     'Destination asset not found: ' . $data['destination'],
                     null,
@@ -221,8 +219,8 @@ class TransfersCommandJson implements TransfersInterface
             $destinationId = $destinationAsset->id;
         }
 
-        // Create transfer record
-        $transfer = new Transfer();
+        // Create transaction record
+        $transfer = new Transaction();
         $transfer->type = $type;
         $transfer->source_id = $sourceId;
         $transfer->source_quantity = $data['source_quantity'] ?? null;
@@ -241,18 +239,18 @@ class TransfersCommandJson implements TransfersInterface
             'command' => TextInput::make('command')
                 ->label(__('Command')),
             'check_duplicates' => \Filament\Forms\Components\Toggle::make('check_duplicates')
-                ->label(__('Check for duplicate transfers'))
-                ->helperText(__('Enable to prevent duplicate transfers from being created'))
+                ->label(__('Check for duplicate transactions'))
+                ->helperText(__('Enable to prevent duplicate transactions from being created'))
                 ->default(true),
             'duplicate_behavior' => \Filament\Forms\Components\Select::make('duplicate_behavior')
                 ->label(__('Duplicate handling behavior'))
                 ->options([
-                    'error' => __('Raise error and stop all transfers'),
-                    'skip' => __('Skip duplicate transfers and continue with others'),
+                    'error' => __('Raise error and stop all transactions'),
+                    'skip' => __('Skip duplicate transactions and continue with others'),
                 ])
                 ->default('error')
                 ->visible(fn($get) => $get('check_duplicates'))
-                ->helperText(__('Choose how to handle duplicate transfers')),
+                ->helperText(__('Choose how to handle duplicate transactions')),
         ];
     }
 }

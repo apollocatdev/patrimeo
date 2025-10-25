@@ -19,6 +19,8 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\DatePicker;
 use Illuminate\Database\Eloquent\Builder;
@@ -72,6 +74,9 @@ class TransactionResource extends Resource
                     ]),
                 Textarea::make('comment')
                     ->rows(3),
+                Toggle::make('reconciled')
+                    ->label('Reconciled')
+                    ->helperText('Mark this transaction as reconciled'),
                 Section::make('Tags')
                     ->collapsible()
                     ->collapsed()
@@ -126,6 +131,10 @@ class TransactionResource extends Resource
                     ->badge()
                     ->separator(', ')
                     ->color('info'),
+                IconColumn::make('reconciled')
+                    ->label('Reconciled')
+                    ->boolean()
+                    ->sortable(),
             ])
             ->defaultSort('date', 'desc')
             ->filters([
