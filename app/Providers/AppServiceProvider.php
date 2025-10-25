@@ -22,6 +22,7 @@ use App\Settings\IntegrationsSettings;
 use App\Settings\EmailSettings;
 use App\Settings\VariousSettings;
 use App\Settings\ValuationUpdateSettings;
+use App\Settings\TransactionsSettings;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -62,5 +63,6 @@ class AppServiceProvider extends ServiceProvider
         FilamentSettings::addSettings(EmailSettings::class);
         FilamentSettings::addSettings(VariousSettings::class);
         FilamentSettings::addSettings(ValuationUpdateSettings::class);
+        FilamentSettings::addSettings(TransactionsSettings::class);
     }
 }

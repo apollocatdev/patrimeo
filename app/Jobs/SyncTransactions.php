@@ -9,7 +9,7 @@ use App\Enums\TransactionUpdateMethod;
 use App\Exceptions\TransactionsException;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use App\Settings\AssetTransactionSettings;
+use App\Settings\TransactionsSettings;
 use App\Helpers\Logs\LogTransactions;
 
 class SyncTransactions implements ShouldQueue
@@ -29,7 +29,7 @@ class SyncTransactions implements ShouldQueue
         $this->rateLimiters = [];
         $this->assetNames = $assetNames;
         $this->userId = $userId;
-        $this->minHoursBetweenUpdates = AssetTransactionSettings::get()->minHoursBetweenUpdates;
+        $this->minHoursBetweenUpdates = TransactionsSettings::get()->minHoursBetweenUpdates;
     }
 
     /**
