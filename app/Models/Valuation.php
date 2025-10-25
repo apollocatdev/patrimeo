@@ -48,20 +48,6 @@ class Valuation extends Model
         $query->whereIn('name', $allPairs);
     }
 
-    public function getRateLimiterKeyAttribute(): string
-    {
-        if ($this->update_method === ValuationUpdateMethod::YAHOO) {
-            return 'yahoo';
-        }
-        if ($this->update_method === ValuationUpdateMethod::XPATH) {
-            return parse_url($this->update_data['url'], PHP_URL_HOST);
-        }
-        if ($this->update_method === ValuationUpdateMethod::OPENAI) {
-            return 'openai';
-        }
-        return 'none';
-    }
-
     public function currency(): BelongsTo
     {
         return $this->belongsTo(Currency::class);

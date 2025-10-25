@@ -52,6 +52,18 @@ enum ValuationUpdateMethod: string implements HasLabel
         };
     }
 
+    public function getRateLimiterKey(?array $updateData = null): string
+    {
+        return match ($this) {
+            self::YAHOO => 'yahoo',
+            self::XPATH => $updateData && isset($updateData['url'])
+                ? parse_url($updateData['url'], PHP_URL_HOST)
+                : 'none',
+            self::OPENAI => 'openai',
+            self::XPATH_JAVASCRIPT, self::CSS, self::COINGECKO, self::FIXED, self::MANUAL, self::COMMAND => 'none',
+        };
+    }
+
     public static function dropdown()
     {
         $dropdown = [];

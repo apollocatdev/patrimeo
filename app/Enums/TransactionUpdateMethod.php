@@ -40,6 +40,17 @@ enum TransactionUpdateMethod: string implements HasLabel
         };
     }
 
+    public function getRateLimiterKey(): string
+    {
+        return match ($this) {
+            self::FINARY => 'finary',
+            self::WOOB => 'woob',
+            self::COMMAND_JSON => 'command_json',
+            self::COMMAND_SIMPLE_BALANCE => 'command_simple_balance',
+            self::MANUAL, self::FIXED => 'none',
+        };
+    }
+
     public static function dropdown()
     {
         $dropdown = [];

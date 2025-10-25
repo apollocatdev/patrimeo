@@ -34,7 +34,7 @@ class ValuationModelTest extends TestCase
             'user_id' => $user->id,
         ]);
 
-        $this->assertEquals('yahoo', $valuation->rate_limiter_key);
+        $this->assertEquals('yahoo', $valuation->update_method->getRateLimiterKey($valuation->update_data));
     }
 
     public function test_get_rate_limiter_key_for_xpath(): void
@@ -50,7 +50,7 @@ class ValuationModelTest extends TestCase
             'user_id' => $user->id,
         ]);
 
-        $this->assertEquals('example.com', $valuation->rate_limiter_key);
+        $this->assertEquals('example.com', $valuation->update_method->getRateLimiterKey($valuation->update_data));
     }
 
     public function test_get_rate_limiter_key_for_openai(): void
@@ -65,7 +65,7 @@ class ValuationModelTest extends TestCase
             'user_id' => $user->id,
         ]);
 
-        $this->assertEquals('openai', $valuation->rate_limiter_key);
+        $this->assertEquals('openai', $valuation->update_method->getRateLimiterKey($valuation->update_data));
     }
 
     public function test_get_rate_limiter_key_for_unknown_method(): void
@@ -80,7 +80,7 @@ class ValuationModelTest extends TestCase
             'user_id' => $user->id,
         ]);
 
-        $this->assertEquals('none', $valuation->rate_limiter_key);
+        $this->assertEquals('none', $valuation->update_method->getRateLimiterKey($valuation->update_data));
     }
 
     public function test_last_update_relationship(): void

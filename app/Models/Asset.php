@@ -98,21 +98,4 @@ class Asset extends Model
     {
         return $this->morphToMany(Schedule::class, 'schedulable', 'schedulables');
     }
-
-    public function getRateLimiterKeyAttribute(): string
-    {
-        if ($this->update_method === TransactionUpdateMethod::FINARY) {
-            return 'finary';
-        }
-        if ($this->update_method === TransactionUpdateMethod::WOOB) {
-            return 'woob';
-        }
-        if ($this->update_method === TransactionUpdateMethod::COMMAND_JSON) {
-            return 'command_json';
-        }
-        if ($this->update_method === TransactionUpdateMethod::COMMAND_SIMPLE_BALANCE) {
-            return 'command_simple_balance';
-        }
-        return 'none';
-    }
 }

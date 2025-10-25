@@ -70,7 +70,7 @@ class SyncTransactions implements ShouldQueue
             foreach ($assets as $asset) {
                 $this->sleepIfNeeded($asset);
                 $this->updateAssetTransactions($asset);
-                $this->rateLimiters[$asset->getRateLimiterKey()] = $asset->updated_at;
+                $this->rateLimiters[$asset->update_method->getRateLimiterKey()] = $asset->updated_at;
             }
         } catch (Exception $e) {
             LogTransactions::error("Transaction update failed: " . $e->getMessage());
@@ -80,7 +80,7 @@ class SyncTransactions implements ShouldQueue
 
     protected function sleepIfNeeded(Asset $asset): void
     {
-        $rateLimiterKey = $asset->getRateLimiterKey();
+        $rateLimiterKey = $asset->update_method->getRateLimiterKey();
 
         if (!array_key_exists($rateLimiterKey, $this->rateLimiters)) {
             return;

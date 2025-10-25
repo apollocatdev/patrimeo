@@ -64,7 +64,7 @@ class SyncValuations implements ShouldQueue
                 $this->sleepIfNeeded($valuation);
                 try {
                     $valuation = $this->updateCotation($valuation);
-                    $this->rateLimiters[$valuation->rate_limiter_key] = $valuation->updated_at;
+                    $this->rateLimiters[$valuation->update_method->getRateLimiterKey($valuation->update_data)] = $valuation->updated_at;
                 } catch (ValuationException $e) {
                     LogValuations::error("Failed to update valuation {$valuation->name}: " . $e->getMessage());
                 }
@@ -107,14 +107,15 @@ class SyncValuations implements ShouldQueue
 
     protected function sleepIfNeeded(Cotation $valuation): void
     {
-        if (! array_key_exists($valuation->rate_limiter_key, $this->rateLimiters)) {
+        $rateLimiterKey = $valuation->update_method->getRateLimiterKey($valuation->update_data);
+        if (! array_key_exists($rateLimiterKey, $this->rateLimiters)) {
             return;
         }
-        $lastUpdate = $this->rateLimiters[$valuation->rate_limiter_key];
-        $rateLimitSeconds = $this->settings->getRateLimitForService($valuation->rate_limiter_key);
+        $lastUpdate = $this->rateLimiters[$rateLimiterKey];
+        $rateLimitSeconds = $this->settings->getRateLimitForService($rateLimiterKey);
 
         if ($lastUpdate > now()->subSeconds($rateLimitSeconds)) {
-            LogValuations::info("Rate limiter activated for {$valuation->rate_limiter_key}, sleeping {$rateLimitSeconds} seconds");
+            LogValuations::info("Rate limiter activated for {$rateLimiterKey}, sleeping {$rateLimitSeconds} seconds");
             sleep($rateLimitSeconds);
         }
     }
