@@ -285,12 +285,11 @@ class AssetResource extends Resource
                             $serviceClass = $record->update_method->getServiceClass();
                             if ($serviceClass) {
                                 $service = new $serviceClass($record);
-                                $transactions = $service->getTransactions();
-
-
+                                $service->saveTransactions();
+                                $nTransactions = $record->computeQuantity();
                                 Notification::make()
                                     ->title(__('Asset updated successfully'))
-                                    ->body(__(':value new transactions', ['value' => count($transactions)]))
+                                    ->body(__(':value new transactions', ['value' => $nTransactions]))
                                     ->success()
                                     ->send();
                             }

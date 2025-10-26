@@ -47,7 +47,7 @@ class Asset extends Model
         return $this->belongsTo(Valuation::class);
     }
 
-    public function computeQuantity(): void
+    public function computeQuantity(): int
     {
         $transactions = Transaction::where('reconciled', true)->get();
 
@@ -74,6 +74,7 @@ class Asset extends Model
             $transaction->reconciled = true;
             $transaction->save();
         }
+        return count($transactions);
     }
 
     /**
