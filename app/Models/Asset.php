@@ -49,7 +49,7 @@ class Asset extends Model
 
     public function computeQuantity(): int
     {
-        $transactions = Transaction::where('reconciled', true)->get();
+        $transactions = Transaction::where('reconciled', false)->get();
 
         $newQuantity = $this->quantity;
 

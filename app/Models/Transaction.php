@@ -51,15 +51,16 @@ class Transaction extends Model
      */
     public function checkDuplicate(): bool
     {
-        $query = static::where('source_id', $this->source_id)
+        $query = static::where('type', $this->type)
+            ->where('source_id', $this->source_id)
             ->where('destination_id', $this->destination_id)
             ->where('source_quantity', $this->source_quantity)
             ->where('destination_quantity', $this->destination_quantity)
-            ->where('date', $this->date);
+            ->whereDate('date', $this->date->format('Y-m-d'));
 
-        // If the transaction is already saved, exclude it from duplicate check
-        if ($this->exists) {
-            $query->where('id', '!=', $this->id);
+        // Only exclude current record if it has an ID (is saved)
+        if ($this->id) {
+            $query->whereNot('id', $this->id);
         }
 
         return $query->exists();
