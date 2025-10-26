@@ -25,8 +25,8 @@ class Taxonomy extends Model
         parent::boot();
 
         static::saving(function ($taxonomy) {
-            // Transfers taxonomies are automatically unweighted
-            if ($taxonomy->type === TaxonomyTypes::TRANSFERS) {
+            // Transactions taxonomies are automatically unweighted
+            if ($taxonomy->type === TaxonomyTypes::TRANSACTIONS) {
                 $taxonomy->weighted = false;
             }
         });

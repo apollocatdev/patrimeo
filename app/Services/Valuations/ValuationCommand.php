@@ -27,7 +27,7 @@ class ValuationCommand implements ValuationInterface
             if (empty($command)) {
                 throw new ValuationException(
                     $this->valuation,
-                    'Command is required for command-based cotation',
+                    'Command is required for command-based valuation',
                     null,
                     'Missing field: command'
                 );
@@ -53,7 +53,7 @@ class ValuationCommand implements ValuationInterface
         } catch (\Exception $e) {
             throw new ValuationException(
                 $this->valuation,
-                'Unexpected error in command-based cotation: ' . $e->getMessage(),
+                'Unexpected error in command-based valuation: ' . $e->getMessage(),
                 null,
                 $e->getMessage()
             );

@@ -30,7 +30,7 @@ class ValuationXPath implements ValuationInterface
             if (empty($url)) {
                 throw new ValuationException(
                     $this->valuation,
-                    'URL is required for XPath-based cotation',
+                    'URL is required for XPath-based valuation',
                     null,
                     'Missing field: url'
                 );
@@ -39,7 +39,7 @@ class ValuationXPath implements ValuationInterface
             if (empty($xpath)) {
                 throw new ValuationException(
                     $this->valuation,
-                    'XPath expression is required for XPath-based cotation',
+                    'XPath expression is required for XPath-based valuation',
                     null,
                     'Missing field: xpath'
                 );
@@ -50,7 +50,7 @@ class ValuationXPath implements ValuationInterface
             if (!$request->successful()) {
                 throw new ValuationException(
                     $this->valuation,
-                    'Failed to fetch URL for XPath-based cotation',
+                    'Failed to fetch URL for XPath-based valuation',
                     $request->status(),
                     $request->body()
                 );
@@ -75,7 +75,7 @@ class ValuationXPath implements ValuationInterface
         } catch (\Exception $e) {
             throw new ValuationException(
                 $this->valuation,
-                'Unexpected error in XPath-based cotation: ' . $e->getMessage(),
+                'Unexpected error in XPath-based valuation: ' . $e->getMessage(),
                 null,
                 $e->getMessage()
             );

@@ -71,7 +71,7 @@ class FilterResource extends Resource
                                 if ($entity === FilterEntity::ASSETS) {
                                     return FilterRuleAssetType::class;
                                 }
-                                if ($entity === FilterEntity::COTATIONS) {
+                                if ($entity === FilterEntity::VALUATIONS) {
                                     return FilterRuleValuationType::class;
                                 }
                                 return [];
@@ -93,7 +93,7 @@ class FilterResource extends Resource
                                     return $enumType && $enumType->isNumericRule();
                                 }
 
-                                if ($entity === FilterEntity::COTATIONS && $type) {
+                                if ($entity === FilterEntity::VALUATIONS && $type) {
                                     $enumType = FilterRuleValuationType::tryFrom($type);
                                     return $enumType && $enumType->isNumericRule();
                                 }
@@ -113,7 +113,7 @@ class FilterResource extends Resource
                                     }
                                 }
 
-                                if ($entity === FilterEntity::COTATIONS && $type) {
+                                if ($entity === FilterEntity::VALUATIONS && $type) {
                                     $enumType = FilterRuleValuationType::tryFrom($type);
                                     if ($enumType && $enumType->isNumericRule()) {
                                         return __('Value');
@@ -134,7 +134,7 @@ class FilterResource extends Resource
                                     }
                                 }
 
-                                if ($entity === FilterEntity::COTATIONS && $type) {
+                                if ($entity === FilterEntity::VALUATIONS && $type) {
                                     $enumType = FilterRuleValuationType::tryFrom($type);
                                     if ($enumType && $enumType->isNumericRule()) {
                                         return __('Enter a single numeric value');

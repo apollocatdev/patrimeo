@@ -5,5 +5,5 @@ namespace App\Enums;
 enum TaxonomyTypes: string
 {
     case ASSETS = 'assets';
-    case TRANSFERS = 'transfers';
+    case TRANSACTIONS = 'transactions';
 }

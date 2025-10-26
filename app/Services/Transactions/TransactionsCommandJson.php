@@ -22,7 +22,7 @@ class TransactionsCommandJson implements TransactionsInterface
         $this->asset = $asset;
 
         // Get enum values dynamically
-        $transferTypes = array_map(fn($case) => $case->value, TransactionType::cases());
+        $transactionTypes = array_map(fn($case) => $case->value, TransactionType::cases());
 
         $this->jsonSchema = json_encode([
             '$schema' => 'http://json-schema.org/draft-07/schema#',
@@ -33,7 +33,7 @@ class TransactionsCommandJson implements TransactionsInterface
                 'properties' => [
                     'type' => [
                         'type' => 'string',
-                        'enum' => $transferTypes
+                        'enum' => $transactionTypes
                     ],
                     'source' => ['type' => 'string'],
                     'source_quantity' => ['type' => 'number'],
@@ -102,42 +102,42 @@ class TransactionsCommandJson implements TransactionsInterface
         $checkDuplicates = $this->asset->update_data['check_duplicates'] ?? true;
         $duplicateBehavior = $this->asset->update_data['duplicate_behavior'] ?? 'error';
 
-        // Process and create transfers
-        $transfers = [];
+        // Process and create transactions
+        $transactions = [];
         $skippedDuplicates = [];
 
-        foreach ($json as $transferData) {
-            $transferData = (array) $transferData;
+        foreach ($json as $transactionData) {
+            $transactionData = (array) $transactionData;
             try {
-                $transfer = $this->createTransaction($transferData);
+                $transaction = $this->createTransaction($transactionData);
 
                 // Check for duplicates if enabled
-                if ($checkDuplicates && $transfer->checkDuplicate()) {
+                if ($checkDuplicates && $transaction->checkDuplicate()) {
                     if ($duplicateBehavior === 'error') {
                         throw new TransactionsException($this->asset, 'Duplicate transaction detected', null, 'A transaction with the same source, destination, quantities, and date already exists');
                     } else {
-                        // Skip this transfer and continue with others
-                        $skippedDuplicates[] = $transferData;
+                        // Skip this transaction and continue with others
+                        $skippedDuplicates[] = $transactionData;
                         continue;
                     }
                 }
 
-                $transfer->save();
-                $transfers[] = $transfer;
+                $transaction->save();
+                $transactions[] = $transaction;
             } catch (\Exception $e) {
-                throw new TransactionsException($this->asset, 'Failed to create transaction: ' . $e->getMessage(), null, 'Transaction data: ' . json_encode($transferData));
+                throw new TransactionsException($this->asset, 'Failed to create transaction: ' . $e->getMessage(), null, 'Transaction data: ' . json_encode($transactionData));
             }
         }
 
         // Recompute the asset quantity based on the new transactions
-        if (!empty($transfers)) {
+        if (!empty($transactions)) {
             $this->asset->computeQuantity();
         }
     }
 
     protected function createTransaction(array $data): Transaction
     {
-        // Validate TransferType
+        // Validate TransactionType
         try {
             $type = TransactionType::from($data['type']);
         } catch (\ValueError $e) {
@@ -171,17 +171,17 @@ class TransactionsCommandJson implements TransactionsInterface
         }
 
         // Create transaction record
-        $transfer = new Transaction();
-        $transfer->type = $type;
-        $transfer->source_id = $sourceId;
-        $transfer->source_quantity = $data['source_quantity'] ?? null;
-        $transfer->destination_id = $destinationId;
-        $transfer->destination_quantity = $data['destination_quantity'] ?? null;
-        $transfer->date = $data['date'];
-        $transfer->comment = $data['comment'] ?? null;
-        $transfer->user_id = $this->asset->user_id;
+        $transaction = new Transaction();
+        $transaction->type = $type;
+        $transaction->source_id = $sourceId;
+        $transaction->source_quantity = $data['source_quantity'] ?? null;
+        $transaction->destination_id = $destinationId;
+        $transaction->destination_quantity = $data['destination_quantity'] ?? null;
+        $transaction->date = $data['date'];
+        $transaction->comment = $data['comment'] ?? null;
+        $transaction->user_id = $this->asset->user_id;
 
-        return $transfer;
+        return $transaction;
     }
 
     public static function getFields(): array

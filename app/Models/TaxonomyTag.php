@@ -25,8 +25,8 @@ class TaxonomyTag extends Model
         return $this->belongsToMany(Asset::class, 'tags_assets', 'tag_id', 'asset_id');
     }
 
-    public function transfers(): BelongsToMany
+    public function transactions(): BelongsToMany
     {
-        return $this->belongsToMany(Transfer::class, 'transfer_taxonomy_tags', 'tag_id', 'transfer_id');
+        return $this->belongsToMany(Transaction::class, 'transaction_taxonomy_tags', 'tag_id', 'transaction_id');
     }
 }

@@ -154,11 +154,11 @@ class ValuationOpenAI implements ValuationInterface
             );
         }
 
-        // Check if currency matches the cotation's currency
+        // Check if currency matches the valuation's currency
         if ($this->debugInformation['currency'] !== $this->valuation->currency->symbol) {
             throw new ValuationException(
                 $this->valuation,
-                'Currency mismatch: OpenAI returned ' . $this->debugInformation['currency'] . ' but cotation expects ' . $this->valuation->currency->symbol,
+                'Currency mismatch: OpenAI returned ' . $this->debugInformation['currency'] . ' but valuation expects ' . $this->valuation->currency->symbol,
                 null,
                 'Currency validation failed'
             );
@@ -227,8 +227,8 @@ class ValuationOpenAI implements ValuationInterface
         return [
             'prompt' => TextInput::make('prompt')
                 ->label(__('Custom prompt'))
-                ->helperText(__('Use {cotation_name} as placeholder for the cotation name. Leave empty to use default prompt.'))
-                ->placeholder(__('Get the latest price of {cotation_name}')),
+                ->helperText(__('Use {valuation_name} as placeholder for the valuation name. Leave empty to use default prompt.'))
+                ->placeholder(__('Get the latest price of {valuation_name}')),
         ];
     }
 }

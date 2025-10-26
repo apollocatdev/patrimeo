@@ -43,16 +43,16 @@ class TaxonomyResource extends Resource
                     ->default(TaxonomyTypes::ASSETS)
                     ->live()
                     ->afterStateUpdated(function ($state, callable $set) {
-                        // Automatically set weighted to false for transfers
-                        if ($state === TaxonomyTypes::TRANSFERS) {
+                        // Automatically set weighted to false for transactions
+                        if ($state === TaxonomyTypes::TRANSACTIONS) {
                             $set('weighted', false);
                         }
                     }),
                 Toggle::make('weighted')
                     ->label('Weighted Taxonomy')
-                    ->helperText('Weighted taxonomies allow numeric values for tags, while non-weighted taxonomies are simple associations. Transfers taxonomies are automatically unweighted.')
+                    ->helperText('Weighted taxonomies allow numeric values for tags, while non-weighted taxonomies are simple associations. Transactions taxonomies are automatically unweighted.')
                     ->default(false)
-                    ->disabled(fn(callable $get) => $get('type') === TaxonomyTypes::TRANSFERS),
+                    ->disabled(fn(callable $get) => $get('type') === TaxonomyTypes::TRANSACTIONS),
             ])->columns(1);
     }
 
@@ -67,7 +67,7 @@ class TaxonomyResource extends Resource
                     ->badge()
                     ->color(fn(TaxonomyTypes $state): string => match ($state) {
                         TaxonomyTypes::ASSETS => 'success',
-                        TaxonomyTypes::TRANSFERS => 'info',
+                        TaxonomyTypes::TRANSACTIONS => 'info',
                     })
                     ->sortable(),
                 BooleanColumn::make('weighted')

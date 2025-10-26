@@ -28,7 +28,7 @@ class ValuationXPathJavascript implements ValuationInterface
             if (empty($url) || empty($xpath)) {
                 throw new ValuationException(
                     $this->valuation,
-                    'URL and XPath are required for JavaScript-based cotation',
+                    'URL and XPath are required for JavaScript-based valuation',
                     null,
                     'Missing required fields'
                 );
@@ -54,7 +54,7 @@ class ValuationXPathJavascript implements ValuationInterface
         } catch (\Exception $e) {
             throw new ValuationException(
                 $this->valuation,
-                'Unexpected error in JavaScript-based cotation: ' . $e->getMessage(),
+                'Unexpected error in JavaScript-based valuation: ' . $e->getMessage(),
                 null,
                 $e->getMessage()
             );

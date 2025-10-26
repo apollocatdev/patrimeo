@@ -118,7 +118,7 @@ class SyncTransactions implements ShouldQueue
                     $e->getMessage(),
                     null,
                     null,
-                    ['type' => 'transfer_update']
+                    ['type' => 'transaction_update']
                 );
             }
         }

@@ -115,7 +115,7 @@ class ValuationResource extends Resource
                             ->descriptions(function ($record) {
                                 return $record?->cron ?? [];
                             })
-                            ->helperText('Choose which schedules should update this cotation'),
+                            ->helperText('Choose which schedules should update this valuation'),
                     ]),
             ])->columns(1);
     }
@@ -173,13 +173,13 @@ class ValuationResource extends Resource
                                 $service = new $serviceClass($record);
                                 $newValue = $service->getQuote();
 
-                                // Update the cotation value
+                                // Update the valuation value
                                 $record->update([
                                     'value' => $newValue,
                                     'last_update' => now(),
                                 ]);
 
-                                // Create cotation update record
+                                // Create valuation update record
                                 $record->updates()->create([
                                     'user_id' => $record->user_id,
                                     'date' => now(),
@@ -195,7 +195,7 @@ class ValuationResource extends Resource
                                     ->send();
                             }
                         } catch (\Exception $e) {
-                            // Create cotation update record for failed update
+                            // Create valuation update record for failed update
                             $record->updates()->create([
                                 'user_id' => $record->user_id,
                                 'date' => now(),

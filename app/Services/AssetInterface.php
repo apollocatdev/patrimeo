@@ -8,7 +8,7 @@ use App\Exceptions\ValuationException;
 interface AssetInterface
 {
     /**
-     * Create a new cotation service instance.
+     * Create a new valuation service instance.
      *
      * @param Valuation $valuation
      */

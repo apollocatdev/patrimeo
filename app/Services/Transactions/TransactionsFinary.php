@@ -51,15 +51,15 @@ class TransactionsFinary implements TransactionsInterface
             return;
         }
 
-        // Determine transfer type and quantities
+        // Determine transaction type and quantities
         if ($difference > 0) {
-            // Finary quantity is higher than asset quantity - income transfer
-            $transferType = TransactionType::Income;
+            // Finary quantity is higher than asset quantity - income transaction
+            $transactionType = TransactionType::Income;
             $destinationQuantity = $difference;
             $sourceQuantity = null;
         } else {
-            // Finary quantity is lower than asset quantity - expense transfer
-            $transferType = TransactionType::Expense;
+            // Finary quantity is lower than asset quantity - expense transaction
+            $transactionType = TransactionType::Expense;
             $sourceQuantity = abs($difference);
             $destinationQuantity = null;
         }
@@ -67,17 +67,17 @@ class TransactionsFinary implements TransactionsInterface
         try {
             $currentDateTime = now();
 
-            $transfer = new Transaction();
-            $transfer->type = $transferType;
-            $transfer->source_id = $transferType === TransactionType::Expense ? $this->asset->id : null;
-            $transfer->source_quantity = $sourceQuantity;
-            $transfer->destination_id = $transferType === TransactionType::Income ? $this->asset->id : null;
-            $transfer->destination_quantity = $destinationQuantity;
-            $transfer->date = $currentDateTime;
-            $transfer->comment = 'Auto-generated from Finary sync';
-            $transfer->user_id = $this->asset->user_id;
+            $transaction = new Transaction();
+            $transaction->type = $transactionType;
+            $transaction->source_id = $transactionType === TransactionType::Expense ? $this->asset->id : null;
+            $transaction->source_quantity = $sourceQuantity;
+            $transaction->destination_id = $transactionType === TransactionType::Income ? $this->asset->id : null;
+            $transaction->destination_quantity = $destinationQuantity;
+            $transaction->date = $currentDateTime;
+            $transaction->comment = 'Auto-generated from Finary sync';
+            $transaction->user_id = $this->asset->user_id;
 
-            $transfer->save();
+            $transaction->save();
 
             // Compute the new quantity based on transactions
             $this->asset->computeQuantity();

@@ -67,7 +67,7 @@ class ImporterExample implements ImporterInterface
 
     public static function getMappingFields(): array
     {
-        return ['envelop', 'asset_class', 'cotation'];
+        return ['envelop', 'asset_class', 'valuation'];
     }
 
     public static function getDisplayFields(): array

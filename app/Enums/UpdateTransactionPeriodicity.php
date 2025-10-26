@@ -4,7 +4,7 @@ namespace App\Enums;
 
 use Filament\Support\Contracts\HasLabel;
 
-enum UpdateTransferPeriodicity: string implements HasLabel
+enum UpdateTransactionPeriodicity: string implements HasLabel
 {
     case MINUTE = 'minute';
     case HOUR = 'hour';

@@ -85,7 +85,7 @@ class AssetResource extends Resource
                         ->live()
                         ->afterStateUpdated(fn(Select $component) => $component
                             ->getContainer()
-                            ->getComponent('dynamicTransferFields')
+                            ->getComponent('dynamicTransactionFields')
                             ->getChildSchema()
                             ->fill()),
 
@@ -105,7 +105,7 @@ class AssetResource extends Resource
                             return [
                                 Group::make()->schema($serviceClass::getFields())->statePath('update_data'),
                             ];
-                        })->key('dynamicTransferFields'),
+                        })->key('dynamicTransactionFields'),
 
                     Select::make('schedules')
                         ->relationship('schedules', 'name')
@@ -192,7 +192,7 @@ class AssetResource extends Resource
             TextColumn::make('quantity')
                 ->numeric()
                 ->sortable(),
-            TextColumn::make('cotation.name')
+            TextColumn::make('valuation.name')
                 ->numeric()
                 ->sortable(),
             TextColumn::make('value')
@@ -281,7 +281,7 @@ class AssetResource extends Resource
                     )
                     ->action(function (Asset $record) {
                         try {
-                            // Get the service class for this cotation
+                            // Get the service class for this valuation
                             $serviceClass = $record->update_method->getServiceClass();
                             if ($serviceClass) {
                                 $service = new $serviceClass($record);

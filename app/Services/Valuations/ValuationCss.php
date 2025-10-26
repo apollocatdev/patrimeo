@@ -50,7 +50,7 @@ class ValuationCss implements ValuationInterface
             if (!$request->successful()) {
                 throw new ValuationException(
                     $this->valuation,
-                    'Failed to fetch URL for CSS-based cotation',
+                    'Failed to fetch URL for CSS-based valuation',
                     $request->status(),
                     $request->body()
                 );
@@ -75,7 +75,7 @@ class ValuationCss implements ValuationInterface
         } catch (\Exception $e) {
             throw new ValuationException(
                 $this->valuation,
-                'Unexpected error in CSS-based cotation: ' . $e->getMessage(),
+                'Unexpected error in CSS-based valuation: ' . $e->getMessage(),
                 null,
                 $e->getMessage()
             );

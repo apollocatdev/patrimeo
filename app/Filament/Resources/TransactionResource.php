@@ -84,7 +84,7 @@ class TransactionResource extends Resource
                         CheckboxList::make('tags')
                             ->relationship('tags', 'name')
                             ->options(function () {
-                                return Taxonomy::where('type', TaxonomyTypes::TRANSFERS)
+                                return Taxonomy::where('type', TaxonomyTypes::TRANSACTIONS)
                                     ->with('tags')
                                     ->get()
                                     ->flatMap(function ($taxonomy) {
@@ -95,7 +95,7 @@ class TransactionResource extends Resource
                             })
                             ->searchable()
                             ->preload()
-                            ->helperText('Select tags to categorize this transfer'),
+                            ->helperText('Select tags to categorize this transaction'),
                     ]),
             ]);
     }

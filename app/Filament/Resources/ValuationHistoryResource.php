@@ -31,8 +31,8 @@ class ValuationHistoryResource extends Resource
     {
         return $schema
             ->components([
-                Select::make('cotation_id')
-                    ->relationship('cotation', 'name')
+                Select::make('valuation_id')
+                    ->relationship('valuation', 'name')
                     ->required()
                     ->searchable(),
                 TextInput::make('value')
@@ -52,7 +52,7 @@ class ValuationHistoryResource extends Resource
                     ->date()
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('cotation.name')
+                TextColumn::make('valuation.name')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('value')
@@ -68,8 +68,8 @@ class ValuationHistoryResource extends Resource
             ->defaultPaginationPageOption(100)
             ->paginated([50, 100, 'all'])
             ->filters([
-                SelectFilter::make('cotation')
-                    ->relationship('cotation', 'name')
+                SelectFilter::make('valuation')
+                    ->relationship('valuation', 'name')
                     ->searchable()
                     ->label('Filter by Valuation'),
             ])

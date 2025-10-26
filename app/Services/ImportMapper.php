@@ -47,7 +47,7 @@ class ImportMapper
             $mappings['asset_class'] = $this->mapAssetClass($record->assetClass);
         }
 
-        // Map cotation
+        // Map valuation
         if ($record->isin || $record->name) {
             $mappings['valuation'] = $this->mapValuation($record);
         }
@@ -87,11 +87,11 @@ class ImportMapper
     {
         $existing = null;
 
-        // Check if this is a cash asset class and should use currency cotation
+        // Check if this is a cash asset class and should use currency valuation
         if ($this->importer && $record->assetClass && $record->currency) {
             $cashAssetClasses = $this->importer::getCashAssetClasses();
             if (in_array($record->assetClass, $cashAssetClasses)) {
-                // For cash assets, try to find or suggest a currency cotation
+                // For cash assets, try to find or suggest a currency valuation
                 $existing = $this->dropdowns['valuations']->first(function ($valuation) use ($record) {
                     return strtolower($valuation->name) === strtolower($record->currency);
                 });
@@ -107,7 +107,7 @@ class ImportMapper
         // Try by ISIN first
         if ($record->isin) {
             $existing = $this->dropdowns['valuations']->first(function ($valuation) use ($record) {
-                return strtolower($cotation->isin ?? '') === strtolower($record->isin);
+                return strtolower($valuation->isin ?? '') === strtolower($record->isin);
             });
         }
 
