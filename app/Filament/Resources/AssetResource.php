@@ -69,9 +69,10 @@ class AssetResource extends Resource
                     //     ->native(false)
                     //     ->locale(LocalizationSettings::get()->dateFormat)
                     //     ->helperText(__('Last time this asset was updated')),
-                    Select::make('cotation_id')
+                    Select::make('valuation_id')
+                        ->label(__('Valuation'))
                         ->required()
-                        ->relationship('cotation', 'name'),
+                        ->relationship('valuation', 'name'),
                 ])->columns(2),
 
                 Section::make(__('Transaction Update Parameters'))->schema([
