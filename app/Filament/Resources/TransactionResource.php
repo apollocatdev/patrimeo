@@ -77,25 +77,24 @@ class TransactionResource extends Resource
                 Toggle::make('reconciled')
                     ->label('Reconciled')
                     ->helperText('Mark this transaction as reconciled'),
-                Section::make('Tags')
-                    ->collapsible()
-                    ->collapsed()
-                    ->schema([
-                        CheckboxList::make('tags')
-                            ->relationship('tags', 'name')
-                            ->options(function () {
-                                return Taxonomy::where('type', TaxonomyTypes::TRANSACTIONS)
-                                    ->with('tags')
-                                    ->get()
-                                    ->flatMap(function ($taxonomy) {
-                                        return $taxonomy->tags->mapWithKeys(function ($tag) use ($taxonomy) {
-                                            return [$tag->id => "{$taxonomy->name}: {$tag->name}"];
-                                        });
-                                    });
-                            })
-                            ->searchable()
-                            ->helperText('Select tags to categorize this transaction'),
-                    ]),
+                ...Taxonomy::where('type', TaxonomyTypes::TRANSACTIONS)
+                    ->with('tags')
+                    ->get()
+                    ->map(function ($taxonomy) {
+                        return Section::make(__('Taxonomy:') . ' ' . $taxonomy->name)
+                            ->collapsible()
+                            ->collapsed()
+                            ->schema([
+                                CheckboxList::make('tags')
+                                    ->relationship(
+                                        'tags',
+                                        'name',
+                                        modifyQueryUsing: fn($query) => $query->where('taxonomy_id', $taxonomy->id)
+                                    )
+                                    ->helperText("Select {$taxonomy->name} tags"),
+                            ]);
+                    })
+                    ->toArray(),
             ]);
     }
 
