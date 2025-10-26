@@ -5,7 +5,7 @@ namespace Tests\Unit;
 use Tests\TestCase;
 use App\Enums\ValuationUpdateMethod;
 use App\Enums\TransactionUpdateMethod;
-use App\Enums\UpdateCotationPeriodicity;
+use App\Enums\UpdateValuationPeriodicity;
 
 class EnumsTest extends TestCase
 {
@@ -104,15 +104,15 @@ class EnumsTest extends TestCase
 
     public function test_update_cotation_periodicity_enum(): void
     {
-        $this->assertEquals('hour', UpdateCotationPeriodicity::HOUR->value);
-        $this->assertEquals('day', UpdateCotationPeriodicity::DAY->value);
-        $this->assertEquals('week', UpdateCotationPeriodicity::WEEK->value);
+        $this->assertEquals('hour', UpdateValuationPeriodicity::HOUR->value);
+        $this->assertEquals('day', UpdateValuationPeriodicity::DAY->value);
+        $this->assertEquals('week', UpdateValuationPeriodicity::WEEK->value);
     }
 
     public function test_update_cotation_periodicity_labels(): void
     {
-        $this->assertEquals('Hour(s)', UpdateCotationPeriodicity::HOUR->getLabel());
-        $this->assertEquals('Day(s)', UpdateCotationPeriodicity::DAY->getLabel());
-        $this->assertEquals('Week(s)', UpdateCotationPeriodicity::WEEK->getLabel());
+        $this->assertEquals('Hour(s)', UpdateValuationPeriodicity::HOUR->getLabel());
+        $this->assertEquals('Day(s)', UpdateValuationPeriodicity::DAY->getLabel());
+        $this->assertEquals('Week(s)', UpdateValuationPeriodicity::WEEK->getLabel());
     }
 }

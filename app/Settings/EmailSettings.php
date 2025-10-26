@@ -107,7 +107,7 @@ class EmailSettings extends Settings
                                 Mail::to(Auth::user()->email)->send(new \App\Mail\ScheduleNotification([
                                     'message' => __('This is a test email from your Patrimeo application.'),
                                     'schedule' => (object) ['name' => __('SMTP Test'), 'cron' => 'test'],
-                                    'cotations' => collect(),
+                                    'valuations' => collect(),
                                     'assets' => collect(),
                                 ]));
 

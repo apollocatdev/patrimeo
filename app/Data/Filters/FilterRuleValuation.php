@@ -2,17 +2,17 @@
 
 namespace App\Data\Filters;
 
-use App\Enums\Filters\FilterRuleCotationType;
+use App\Enums\Filters\FilterRuleValuationType;
 use App\Enums\Filters\FilterRuleOperator;
 
 
-class FilterRuleCotation
+class FilterRuleValuation
 {
-    public FilterRuleCotationType $type;
+    public FilterRuleValuationType $type;
     public array $values;
     public ?FilterRuleOperator $operator;
 
-    public function __construct(FilterRuleCotationType $type, array $values, ?FilterRuleOperator $operator = null)
+    public function __construct(FilterRuleValuationType $type, array $values, ?FilterRuleOperator $operator = null)
     {
         $this->type = $type;
         $this->values = $values;

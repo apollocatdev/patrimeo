@@ -22,27 +22,27 @@ class History extends Seeder
 
     public function createHistory(User $user)
     {
-        // $cotations = Cotation::where('update_method', '!=', ValuationUpdateMethod::FIXED)->where('update_method', '!=', ValuationUpdateMethod::MANUAL)->get();
-        $cotations = Cotation::all();
+        // $valuations = Valuation::where('update_method', '!=', ValuationUpdateMethod::FIXED)->where('update_method', '!=', ValuationUpdateMethod::MANUAL)->get();
+        $valuations = Valuation::all();
         $histories = collect([]);
 
-        foreach ($cotations as $cotation) {
-            $initialValue = $cotation->value;
-            $initialValueMainCurrency = $cotation->value_main_currency;
+        foreach ($valuations as $valuation) {
+            $initialValue = $valuation->value;
+            $initialValueMainCurrency = $valuation->value_main_currency;
             for ($i = 0; $i < 365; $i++) {
                 $percent = rand(-2, 2)  / 100;
                 $newValue = $initialValue + ($initialValue * $percent);
                 $newValueMainCurrency = $initialValueMainCurrency + ($initialValueMainCurrency * $percent);
-                if (($cotation->update_method === ValuationUpdateMethod::FIXED) || ($cotation->update_method === ValuationUpdateMethod::MANUAL)) {
-                    $newValue = $cotation->value;
-                    $newValueMainCurrency = $cotation->value_main_currency;
+                if (($valuation->update_method === ValuationUpdateMethod::FIXED) || ($valuation->update_method === ValuationUpdateMethod::MANUAL)) {
+                    $newValue = $valuation->value;
+                    $newValueMainCurrency = $valuation->value_main_currency;
                 }
                 $histories->push([
                     'date' => now()->subDays($i)->format('Y-m-d'),
                     'value' => $newValue,
                     'value_main_currency' => $newValueMainCurrency,
                     'user_id' => $user->id,
-                    'cotation_id' => $cotation->id,
+                    'valuation_id' => $valuation->id,
                     'created_at' => now()->subDays($i),
                     'updated_at' => now()->subDays($i),
                 ]);
@@ -52,7 +52,7 @@ class History extends Seeder
         }
         $chunks = $histories->chunk(100);
         foreach ($chunks as $chunk) {
-            CotationHistory::insert($chunk->toArray());
+            ValuationHistory::insert($chunk->toArray());
         }
     }
 

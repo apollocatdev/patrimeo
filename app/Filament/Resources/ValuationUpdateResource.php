@@ -139,8 +139,8 @@ class ValuationUpdateResource extends Resource
         return [
             'index' => ListValuationUpdates::route('/'),
             'view' => ViewValuationUpdate::route('/{record}'),
-            // 'create' => Pages\CreateCotationUpdate::route('/create'),
-            // 'edit' => Pages\EditCotationUpdate::route('/{record}/edit'),
+            // 'create' => Pages\CreateValuationUpdate::route('/create'),
+            // 'edit' => Pages\EditValuationUpdate::route('/{record}/edit'),
         ];
     }
 }

@@ -19,7 +19,7 @@ class UpdateAllValues extends Command
      *
      * @var string
      */
-    protected $description = 'Convert and updates all cotations and assets values to the main currency';
+    protected $description = 'Convert and updates all valuations and assets values to the main currency';
 
     /**
      * Execute the console command.

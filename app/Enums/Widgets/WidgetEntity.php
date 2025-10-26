@@ -6,7 +6,7 @@ use Filament\Support\Contracts\HasLabel;
 
 enum WidgetEntity: string implements HasLabel
 {
-    case COTATIONS = 'cotations';
+    case VALUATIONS = 'valuations';
     case ASSETS = 'assets';
 
 

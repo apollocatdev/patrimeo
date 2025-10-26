@@ -4,7 +4,7 @@ namespace App\Enums;
 
 use Filament\Support\Contracts\HasLabel;
 
-enum UpdateCotationPeriodicity: string implements HasLabel
+enum UpdateValuationPeriodicity: string implements HasLabel
 {
     case MINUTE = 'minute';
     case HOUR = 'hour';

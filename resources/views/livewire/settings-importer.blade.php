@@ -76,10 +76,10 @@
                                 {{ __('Cascade Asset Class') }}
                             </th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
-                                {{ __('Existing Cotation') }}
+                                {{ __('Existing Valuation') }}
                             </th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
-                                {{ __('New Cotation') }}
+                                {{ __('New Valuation') }}
                             </th>
                         </tr>
                     </thead>
@@ -158,7 +158,7 @@
                             </td>
                             <td class="px-4 py-4 whitespace-nowrap">
                                 <select wire:model.live="records.{{ $index }}.mappings.cotation.existing_id"
-                                    wire:change="onCotationChange({{ $index }}, $event.target.value)"
+                                    wire:change="onValuationChange({{ $index }}, $event.target.value)"
                                     class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white">
                                     <option value="">{{ __('Select cotation...') }}</option>
                                     @foreach($dropdowns['cotations'] as $cotation)
@@ -170,7 +170,7 @@
                             </td>
                             <td class="px-4 py-4 whitespace-nowrap">
                                 <input type="text" wire:model.live="records.{{ $index }}.mappings.cotation.new_name"
-                                    wire:change="onCotationTextChange({{ $index }}, $event.target.value)"
+                                    wire:change="onValuationTextChange({{ $index }}, $event.target.value)"
                                     placeholder="{{ __('New cotation name') }}"
                                     class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white">
                             </td>

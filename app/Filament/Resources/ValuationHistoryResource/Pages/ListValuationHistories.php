@@ -20,23 +20,23 @@ class ListValuationHistories extends ListRecords
 
     protected function getHeaderWidgets(): array
     {
-        $valuationId = request()->get('valuation');
-        if ($valuationId) {
-            return [
-                ValuationHistoryChart::make(['valuationId' => $valuationId]),
-            ];
+        $valuationId = null;
+        if (
+            $this->tableFilters &&
+            array_key_exists('valuation', $this->tableFilters) &&
+            $this->tableFilters['valuation'] !== null
+        ) {
+            $valuationId = (int) $this->tableFilters['valuation'];
         }
-        return [];
+
+        return [
+            ValuationHistoryChart::make(['valuationId' => $valuationId]),
+        ];
     }
 
-    protected function getFooterWidgets(): array
+    public function updatedTableFilters(): void
     {
-        $valuationId = request()->get('valuation');
-        if ($valuationId) {
-            return [
-                ValuationHistoryChart::make(['valuationId' => $valuationId]),
-            ];
-        }
-        return [];
+        // Dispatch event to refresh the widget
+        $this->dispatch('refreshWidget');
     }
 }

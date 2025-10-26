@@ -96,8 +96,8 @@ class ValuationModelTest extends TestCase
         ]);
 
         // Create older update
-        CotationUpdate::create([
-            'cotation_id' => $valuation->id,
+        ValuationUpdate::create([
+            'valuation_id' => $valuation->id,
             'date' => now()->subDays(2),
             'value' => 100.0,
             'status' => 'success',
@@ -105,8 +105,8 @@ class ValuationModelTest extends TestCase
         ]);
 
         // Create newer update
-        $newerUpdate = CotationUpdate::create([
-            'cotation_id' => $valuation->id,
+        $newerUpdate = ValuationUpdate::create([
+            'valuation_id' => $valuation->id,
             'date' => now(),
             'value' => 110.0,
             'status' => 'success',

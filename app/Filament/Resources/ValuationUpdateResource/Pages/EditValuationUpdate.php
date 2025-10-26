@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Filament\Resources\CotationUpdateResource\Pages;
+namespace App\Filament\Resources\ValuationUpdateResource\Pages;
 
 use Filament\Actions\DeleteAction;
-use App\Filament\Resources\CotationUpdateResource;
+use App\Filament\Resources\ValuationUpdateResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
-class EditCotationUpdate extends EditRecord
+class EditValuationUpdate extends EditRecord
 {
-    protected static string $resource = CotationUpdateResource::class;
+    protected static string $resource = ValuationUpdateResource::class;
 
     protected function getHeaderActions(): array
     {

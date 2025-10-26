@@ -86,6 +86,6 @@ class Valuation extends Model
 
     // public function getUpdatePeriodicityTextAttribute(): string
     // {
-    //     return SettingsCotationUpdate::getForUser($this->user_id)->getCotationPeriodicityText($this->name, $this->update_method->value);
+    //     return SettingsValuationUpdate::getForUser($this->user_id)->getValuationPeriodicityText($this->name, $this->update_method->value);
     // }
 }

@@ -54,7 +54,7 @@ class ScheduleNotification extends Notification
             'message' => $this->data['message'],
             'schedule_id' => $this->data['schedule']->id,
             'schedule_name' => $this->data['schedule']->name,
-            'cotations_count' => $this->data['cotations']->count(),
+            'valuations_count' => $this->data['valuations']->count(),
             'assets_count' => $this->data['assets']->count(),
         ];
     }

@@ -150,19 +150,19 @@ class SettingsImporter extends Component implements HasForms
         }
     }
 
-    public function onCotationChange($index, $value)
+    public function onValuationChange($index, $value)
     {
         // If a dropdown value is selected (not empty), clear the text input
         if (!empty($value)) {
-            $this->records[$index]['mappings']['cotation']['new_name'] = '';
+            $this->records[$index]['mappings']['valuation']['new_name'] = '';
         }
     }
 
-    public function onCotationTextChange($index, $value)
+    public function onValuationTextChange($index, $value)
     {
         // If text input has a value, clear the dropdown
         if (!empty($value)) {
-            $this->records[$index]['mappings']['cotation']['existing_id'] = '';
+            $this->records[$index]['mappings']['valuation']['existing_id'] = '';
         }
     }
 
@@ -263,8 +263,8 @@ class SettingsImporter extends Component implements HasForms
                     'new_asset_class' => $record['mappings']['asset_class']['new_name'] ?? '',
                     'envelop_id' => $record['mappings']['envelop']['existing_id'] ?? null,
                     'new_envelop' => $record['mappings']['envelop']['new_name'] ?? '',
-                    'cotation_id' => $record['mappings']['cotation']['existing_id'] ?? null,
-                    'new_cotation' => $record['mappings']['cotation']['new_name'] ?? '',
+                    'valuation_id' => $record['mappings']['valuation']['existing_id'] ?? null,
+                    'new_valuation' => $record['mappings']['valuation']['new_name'] ?? '',
                 ];
             }
 
@@ -295,8 +295,8 @@ class SettingsImporter extends Component implements HasForms
             $newAssetClass = $item['new_asset_class'] ?? '';
             $envelopId = $item['envelop_id'];
             $newEnvelop = $item['new_envelop'] ?? '';
-            $cotationId = $item['cotation_id'] ?? null;
-            $newCotation = $item['new_cotation'] ?? '';
+            $valuationId = $item['valuation_id'] ?? null;
+            $newValuation = $item['new_valuation'] ?? '';
 
             // Create or get envelop
             if ($envelopId) {
@@ -324,25 +324,25 @@ class SettingsImporter extends Component implements HasForms
                 continue; // Skip if no asset class specified
             }
 
-            // Create or get cotation if needed
-            if ($cotationId) {
-                $cotation = Cotation::find($cotationId);
-            } elseif ($newCotation) {
+            // Create or get valuation if needed
+            if ($valuationId) {
+                $valuation = Valuation::find($valuationId);
+            } elseif ($newValuation) {
                 $currencyId = (isset($record['class']) && in_array($record['class'], $importer::getCashAssetClasses()) && !empty($record['currency']))
                     ? Currency::firstOrCreate(['symbol' => $record['currency']], ['symbol' => $record['currency'], 'main' => false])->id
                     : Currency::getDefault()?->id;
 
-                $cotation = Cotation::firstOrCreate(
-                    ['name' => $newCotation, 'user_id' => Auth::user()->id],
+                $valuation = Valuation::firstOrCreate(
+                    ['name' => $newValuation, 'user_id' => Auth::user()->id],
                     [
-                        'name' => $newCotation,
+                        'name' => $newValuation,
                         'user_id' => Auth::user()->id,
                         'isin' => $record['isin'] ?? null,
                         'symbol' => $record['symbol'] ?? null,
                         'currency_id' => $currencyId,
                     ]
                 );
-                $cotationId = $cotation->id;
+                $valuationId = $valuation->id;
             }
 
             // Create or update the asset
@@ -354,7 +354,7 @@ class SettingsImporter extends Component implements HasForms
                 [
                     'envelop_id' => $envelopId,
                     'class_id' => $assetClassId,
-                    'cotation_id' => $cotationId,
+                    'valuation_id' => $valuationId,
                     'quantity' => $record['quantity'] ?? null,
                     'value' => $record['current_value'] ?? null,
                     'last_update' => now(),

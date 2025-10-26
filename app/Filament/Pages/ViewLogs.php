@@ -15,7 +15,7 @@ class ViewLogs extends Page
     protected static ?int $navigationSort = 5;
 
     public string $logContent = '';
-    public string $selectedChannel = 'cotations';
+    public string $selectedChannel = 'valuations';
 
     public function mount(): void
     {
@@ -40,7 +40,7 @@ class ViewLogs extends Page
 
     public function clearAllLogs(): void
     {
-        $logFiles = ['cotations.log', 'transfers.log', 'dashboards.log'];
+        $logFiles = ['valuations.log', 'transactions.log', 'dashboards.log'];
         $deletedCount = 0;
 
         foreach ($logFiles as $logFile) {

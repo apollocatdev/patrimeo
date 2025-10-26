@@ -8,7 +8,7 @@
 - **Cron Expression:** {{ $schedule->cron }}
 
 @if($cotations->count() > 0)
-## Cotations
+## Valuations
 @foreach($cotations as $cotation)
 - {{ $cotation->name }} ({{ $cotation->value }} {{ $cotation->currency->symbol ?? '' }})
 @endforeach

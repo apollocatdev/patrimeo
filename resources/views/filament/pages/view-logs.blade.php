@@ -10,7 +10,7 @@
 
         <x-filament::tabs>
             <x-filament::tabs.item wire:click="$set('selectedChannel', 'cotations')" :active="$selectedChannel === 'cotations'">
-                Cotations
+                Valuations
             </x-filament::tabs.item>
 
             <x-filament::tabs.item wire:click="$set('selectedChannel', 'transfers')" :active="$selectedChannel === 'transfers'">

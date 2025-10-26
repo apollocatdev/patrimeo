@@ -15,7 +15,7 @@ trait WidgetHelperTrait
         switch ($entity) {
             case 'assets':
                 return Asset::query();
-            case 'cotations':
+            case 'valuations':
                 return Valuation::query();
             default:
                 return null;

@@ -7,9 +7,9 @@ use Illuminate\Support\Collection;
 use App\Enums\Filters\FilterEntity;
 use Illuminate\Database\Eloquent\Model;
 use App\Enums\Filters\FilterRuleAssetType;
-use App\Enums\Filters\FilterRuleCotationType;
+use App\Enums\Filters\FilterRuleValuationType;
 use App\Data\Filters\FilterRuleAsset;
-use App\Data\Filters\FilterRuleCotation;
+use App\Data\Filters\FilterRuleValuation;
 use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 
@@ -79,7 +79,7 @@ class Filters implements Castable
         return new self($rules);
     }
 
-    public static function createFilterRule(array $filter, FilterEntity $entity): FilterRuleAsset|FilterRuleCotation
+    public static function createFilterRule(array $filter, FilterEntity $entity): FilterRuleAsset|FilterRuleValuation
     {
         if ($entity === FilterEntity::ASSETS) {
             return new FilterRuleAsset(
@@ -89,9 +89,9 @@ class Filters implements Castable
             );
         }
 
-        if ($entity === FilterEntity::COTATIONS) {
-            return new FilterRuleCotation(
-                FilterRuleCotationType::from($filter['type']),
+        if ($entity === FilterEntity::VALUATIONS) {
+            return new FilterRuleValuation(
+                FilterRuleValuationType::from($filter['type']),
                 $filter['values'],
                 $filter['operator'] ?? null
             );

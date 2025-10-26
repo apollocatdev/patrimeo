@@ -32,12 +32,12 @@ class ValuationUpdateSettings extends Settings
 
     public function getLabel(): string
     {
-        return 'Cotation Update Settings';
+        return 'Valuation Update Settings';
     }
 
     public function getDescription(): ?string
     {
-        return 'Configure cotation update frequency and rate limiting for different services';
+        return 'Configure valuation update frequency and rate limiting for different services';
     }
 
     public function getIcon(): ?string
@@ -55,18 +55,18 @@ class ValuationUpdateSettings extends Settings
         return [
             Group::make()->schema([
                 Section::make('Update Frequency')
-                    ->description('Configure how often cotations can be updated')
+                    ->description('Configure how often valuations can be updated')
                     ->schema([
                         TextInput::make('minHoursBetweenUpdates')
                             ->label('Minimum Hours Between Updates')
-                            ->helperText('Minimum number of hours to wait before updating the same cotation again. Set to 0 to disable this restriction.')
+                            ->helperText('Minimum number of hours to wait before updating the same valuation again. Set to 0 to disable this restriction.')
                             ->numeric()
                             ->minValue(0)
                             ->maxValue(168) // 1 week max
                             ->required(),
                     ]),
                 Section::make('Rate Limiters')
-                    ->description('Configure rate limiting for different cotation services to avoid being blocked')
+                    ->description('Configure rate limiting for different valuation services to avoid being blocked')
                     ->schema([
                         TextInput::make('defaultRateLimitSeconds')
                             ->label('Default Rate Limit (seconds)')

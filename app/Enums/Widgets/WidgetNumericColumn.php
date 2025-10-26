@@ -23,7 +23,7 @@ enum WidgetNumericColumn: string implements HasLabel
     {
         return match ($this) {
             self::QUANTITY, self::VALUE => 'assets',
-            self::VALUE_MAIN_CURRENCY => 'cotations',
+            self::VALUE_MAIN_CURRENCY => 'valuations',
         };
     }
 }

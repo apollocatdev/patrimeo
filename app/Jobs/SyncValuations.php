@@ -63,7 +63,7 @@ class SyncValuations implements ShouldQueue
             foreach ($valuations as $i => $valuation) {
                 $this->sleepIfNeeded($valuation);
                 try {
-                    $valuation = $this->updateCotation($valuation);
+                    $valuation = $this->updateValuation($valuation);
                     $this->rateLimiters[$valuation->update_method->getRateLimiterKey($valuation->update_data)] = $valuation->updated_at;
                 } catch (ValuationException $e) {
                     LogValuations::error("Failed to update valuation {$valuation->name}: " . $e->getMessage());
@@ -120,7 +120,7 @@ class SyncValuations implements ShouldQueue
         }
     }
 
-    public function updateCotation(Valuation $valuation): Valuation
+    public function updateValuation(Valuation $valuation): Valuation
     {
         $valuationUpdate = ValuationUpdate::create([
             'valuation_id' => $valuation->id,

@@ -61,7 +61,7 @@ interface ImporterInterface
     public static function getDisplayFields(): array;
 
     /**
-     * Get the asset classes that should be mapped to currency cotations.
+     * Get the asset classes that should be mapped to currency valuations.
      * Returns an array of asset class names that represent cash/currency assets.
      *
      * @return array

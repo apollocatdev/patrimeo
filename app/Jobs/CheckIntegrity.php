@@ -38,7 +38,7 @@ class CheckIntegrity implements ShouldQueue
 
         $integrityResults = [
             'checks' => [
-                'assets_without_valuation' => $this->checkAssetsWithoutCotation(),
+                'assets_without_valuation' => $this->checkAssetsWithoutValuation(),
                 'assets_without_envelop' => $this->checkAssetsWithoutEnvelop(),
                 'assets_without_quantity' => $this->checkAssetsWithoutQuantity(),
                 'assets_without_class' => $this->checkAssetsWithoutClass(),
@@ -85,16 +85,16 @@ class CheckIntegrity implements ShouldQueue
         $this->defaultCurrency = Currency::getDefault();
     }
 
-    protected function checkAssetsWithoutCotation(): array
+    protected function checkAssetsWithoutValuation(): array
     {
-        $assetsWithoutCotation = $this->assets->filter(function ($asset) {
+        $assetsWithoutValuation = $this->assets->filter(function ($asset) {
             return $asset->valuation === null;
         });
 
         return [
             'level' => 'alert',
-            'count' => $assetsWithoutCotation->count(),
-            'items' => $assetsWithoutCotation->pluck('name')->toArray()
+            'count' => $assetsWithoutValuation->count(),
+            'items' => $assetsWithoutValuation->pluck('name')->toArray()
         ];
     }
 
@@ -179,15 +179,15 @@ class CheckIntegrity implements ShouldQueue
     protected function checkValuationsWithoutAssets(): array
     {
         // Get all valuation IDs that are used by assets
-        $usedCotationIds = $this->assets->pluck('valuation_id')->filter()->unique();
+        $usedValuationIds = $this->assets->pluck('valuation_id')->filter()->unique();
 
         // Get all currency symbols for validation
         $currencySymbols = Currency::pluck('symbol')->toArray();
 
         // Get valuations that have no assets, excluding currency conversion valuations
-        $valuationsWithoutAssets = $this->valuations->filter(function ($valuation) use ($usedCotationIds, $currencySymbols) {
+        $valuationsWithoutAssets = $this->valuations->filter(function ($valuation) use ($usedValuationIds, $currencySymbols) {
             // Skip if valuation is used by assets
-            if ($usedCotationIds->contains($valuation->id)) {
+            if ($usedValuationIds->contains($valuation->id)) {
                 return false;
             }
 

@@ -153,7 +153,7 @@ class AdminPanelProvider extends PanelProvider
             // ->navigationGroups([
             //     'Dashboards',
             //     'Portfolio',
-            //     'Cotations',
+            //     'Valuations',
             //     'Configuration',
             // ])
             ->middleware([

@@ -49,7 +49,7 @@ class ImportMapper
 
         // Map cotation
         if ($record->isin || $record->name) {
-            $mappings['cotation'] = $this->mapCotation($record);
+            $mappings['valuation'] = $this->mapValuation($record);
         }
 
         return [
@@ -83,7 +83,7 @@ class ImportMapper
         ];
     }
 
-    private function mapCotation(ImportRecord $record): array
+    private function mapValuation(ImportRecord $record): array
     {
         $existing = null;
 
@@ -92,8 +92,8 @@ class ImportMapper
             $cashAssetClasses = $this->importer::getCashAssetClasses();
             if (in_array($record->assetClass, $cashAssetClasses)) {
                 // For cash assets, try to find or suggest a currency cotation
-                $existing = $this->dropdowns['cotations']->first(function ($cotation) use ($record) {
-                    return strtolower($cotation->name) === strtolower($record->currency);
+                $existing = $this->dropdowns['valuations']->first(function ($valuation) use ($record) {
+                    return strtolower($valuation->name) === strtolower($record->currency);
                 });
 
                 return [
@@ -106,15 +106,15 @@ class ImportMapper
         // Original logic for non-cash assets
         // Try by ISIN first
         if ($record->isin) {
-            $existing = $this->dropdowns['cotations']->first(function ($cotation) use ($record) {
+            $existing = $this->dropdowns['valuations']->first(function ($valuation) use ($record) {
                 return strtolower($cotation->isin ?? '') === strtolower($record->isin);
             });
         }
 
         // Try by name if not found by ISIN
         if (!$existing && $record->name) {
-            $existing = $this->dropdowns['cotations']->first(function ($cotation) use ($record) {
-                return strtolower($cotation->name) === strtolower($record->name);
+            $existing = $this->dropdowns['valuations']->first(function ($valuation) use ($record) {
+                return strtolower($valuation->name) === strtolower($record->name);
             });
         }
 

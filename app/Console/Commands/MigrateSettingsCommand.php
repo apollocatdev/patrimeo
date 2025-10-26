@@ -10,7 +10,7 @@ use App\Settings\LocalizationSettings;
 use App\Settings\IntegrationsSettings;
 use App\Settings\EmailSettings;
 use App\Settings\VariousSettings;
-use App\Settings\CotationUpdateSettings;
+use App\Settings\ValuationUpdateSettings;
 use App\Settings\AssetTransferSettings;
 use Illuminate\Support\Facades\DB;
 

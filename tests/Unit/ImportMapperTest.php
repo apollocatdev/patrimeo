@@ -30,7 +30,7 @@ class ImportMapperTest extends TestCase
         $envelop = Envelop::create(['name' => 'Investment Account', 'user_id' => Auth::id()]);
         $class = AssetClass::create(['name' => 'Stocks', 'user_id' => Auth::id()]);
         $currency = Currency::create(['symbol' => 'EUR', 'main' => true, 'user_id' => Auth::id()]);
-        $cot = Cotation::create(['name' => 'AAPL', 'currency_id' => $currency->id, 'user_id' => Auth::id()]);
+        $cot = Valuation::create(['name' => 'AAPL', 'currency_id' => $currency->id, 'user_id' => Auth::id()]);
 
         $mapper = new ImportMapper();
         $record = ImportRecord::fromArray([
@@ -55,8 +55,8 @@ class ImportMapperTest extends TestCase
     {
         Currency::create(['symbol' => 'USD', 'main' => false, 'user_id' => Auth::id()]);
         $eur = Currency::create(['symbol' => 'EUR', 'main' => true, 'user_id' => Auth::id()]);
-        // Cotation named EUR should be suggested
-        $cot = Cotation::create(['name' => 'EUR', 'currency_id' => $eur->id, 'user_id' => Auth::id()]);
+        // Valuation named EUR should be suggested
+        $cot = Valuation::create(['name' => 'EUR', 'currency_id' => $eur->id, 'user_id' => Auth::id()]);
 
         $mapper = new ImportMapper(new ImporterExample([]));
         $record = ImportRecord::fromArray([

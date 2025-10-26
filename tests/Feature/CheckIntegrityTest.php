@@ -33,7 +33,7 @@ class CheckIntegrityTest extends TestCase
 
         // Disable observers for testing to avoid UpdateAllValues job issues
         Asset::unsetEventDispatcher();
-        Cotation::unsetEventDispatcher();
+        Valuation::unsetEventDispatcher();
         Envelop::unsetEventDispatcher();
         AssetClass::unsetEventDispatcher();
     }
@@ -113,7 +113,7 @@ class CheckIntegrityTest extends TestCase
         // Create clean test data
         $envelop = Envelop::factory()->create(['user_id' => $this->user->id]);
         $assetClass = AssetClass::factory()->create(['user_id' => $this->user->id]);
-        $cotation = Cotation::create([
+        $valuation = Valuation::create([
             'name' => 'TEST',
             'currency_id' => $this->defaultCurrency->id,
             'user_id' => $this->user->id,

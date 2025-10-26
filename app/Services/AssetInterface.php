@@ -3,14 +3,14 @@
 namespace App\Services;
 
 use App\Models\Asset;
-use App\Exceptions\CotationException;
+use App\Exceptions\ValuationException;
 
 interface AssetInterface
 {
     /**
      * Create a new cotation service instance.
      *
-     * @param Cotation $cotation
+     * @param Valuation $valuation
      */
     public function __construct(Asset $asset);
 
@@ -18,7 +18,7 @@ interface AssetInterface
      * Get the current assets quantity     
      * 
      * @return float
-     * @throws CotationException
+     * @throws ValuationException
      */
     public function getQuantity(): float;
 
