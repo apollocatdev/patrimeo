@@ -3,10 +3,10 @@
 namespace App\Enums;
 
 use Filament\Support\Contracts\HasLabel;
-use App\Services\Transfers\TransfersCommandJson;
-use App\Services\Transfers\TransfersCommandSimpleBalance;
-use App\Services\Transfers\TransfersWoob;
-use App\Services\Transfers\TransfersFinary;
+use App\Services\Transactions\TransactionsCommandJson;
+use App\Services\Transactions\TransactionsCommandSimpleBalance;
+use App\Services\Transactions\TransactionsWoob;
+use App\Services\Transactions\TransactionsFinary;
 
 enum TransactionUpdateMethod: string implements HasLabel
 {
@@ -32,10 +32,10 @@ enum TransactionUpdateMethod: string implements HasLabel
     public function getServiceClass(): ?string
     {
         return match ($this) {
-            self::COMMAND_JSON => TransfersCommandJson::class,
-            self::COMMAND_SIMPLE_BALANCE => TransfersCommandSimpleBalance::class,
-            self::WOOB => TransfersWoob::class,
-            self::FINARY => TransfersFinary::class,
+            self::COMMAND_JSON => TransactionsCommandJson::class,
+            self::COMMAND_SIMPLE_BALANCE => TransactionsCommandSimpleBalance::class,
+            self::WOOB => TransactionsWoob::class,
+            self::FINARY => TransactionsFinary::class,
             self::FIXED, self::MANUAL => null,
         };
     }
