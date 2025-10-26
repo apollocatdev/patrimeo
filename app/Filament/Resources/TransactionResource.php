@@ -107,6 +107,10 @@ class TransactionResource extends Resource
                 TextColumn::make('date')
                     ->date()
                     ->sortable(),
+                IconColumn::make('reconciled')
+                    ->label('Reconciled')
+                    ->boolean()
+                    ->sortable(),
                 TextColumn::make('type')
                     ->badge()
                     ->color(fn(TransactionType $state): string => match ($state) {
@@ -126,15 +130,13 @@ class TransactionResource extends Resource
                 TextColumn::make('destination_quantity')
                     ->numeric()
                     ->sortable(),
+                TextColumn::make('comment')
+                    ->limit(50),
                 TextColumn::make('tags.name')
                     ->label('Tags')
                     ->badge()
                     ->separator(', ')
                     ->color('info'),
-                IconColumn::make('reconciled')
-                    ->label('Reconciled')
-                    ->boolean()
-                    ->sortable(),
             ])
             ->defaultSort('date', 'desc')
             ->filters([
