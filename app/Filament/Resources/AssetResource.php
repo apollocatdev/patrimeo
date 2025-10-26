@@ -13,7 +13,7 @@ use Filament\Schemas\Schema;
 use Filament\Actions\EditAction;
 use Filament\Resources\Resource;
 use Filament\Actions\DeleteAction;
-use App\Enums\TransferUpdateMethod;
+use App\Enums\TransactionUpdateMethod;
 use Filament\Actions\BulkActionGroup;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Tabs;
@@ -74,13 +74,13 @@ class AssetResource extends Resource
                         ->relationship('cotation', 'name'),
                 ])->columns(2),
 
-                Section::make(__('Transfer Update Parameters'))->schema([
+                Section::make(__('Transaction Update Parameters'))->schema([
                     Select::make('update_method')
-                        ->label(__('Transfer Update Method'))
+                        ->label(__('Transaction Update Method'))
                         ->required()
-                        ->options(TransferUpdateMethod::class)
-                        ->helperText(__('Method used to update transfers for this asset'))
-                        ->placeholder(__('Select a transfer update method'))
+                        ->options(TransactionUpdateMethod::class)
+                        ->helperText(__('Method used to update transactions for this asset'))
+                        ->placeholder(__('Select a transaction update method'))
                         ->live()
                         ->afterStateUpdated(fn(Select $component) => $component
                             ->getContainer()
@@ -199,7 +199,7 @@ class AssetResource extends Resource
                 ->sortable()
                 ->summarize(Sum::make('value')),
             TextColumn::make('update_method')
-                ->label(__('Transfer Method'))
+                ->label(__('Transaction Method'))
                 ->badge()
                 ->color('info')
                 ->toggleable(isToggledHiddenByDefault: true),
@@ -276,7 +276,7 @@ class AssetResource extends Resource
                     ->icon('heroicon-o-arrow-path')
                     ->visible(
                         fn(Asset $record): bool =>
-                        !in_array($record->update_method, [TransferUpdateMethod::FIXED, TransferUpdateMethod::MANUAL])
+                        !in_array($record->update_method, [TransactionUpdateMethod::FIXED, TransactionUpdateMethod::MANUAL])
                     )
                     ->action(function (Asset $record) {
                         try {
@@ -284,12 +284,12 @@ class AssetResource extends Resource
                             $serviceClass = $record->update_method->getServiceClass();
                             if ($serviceClass) {
                                 $service = new $serviceClass($record);
-                                $transfers = $service->getTransfers();
+                                $transactions = $service->getTransactions();
 
 
                                 Notification::make()
                                     ->title(__('Asset updated successfully'))
-                                    ->body(__(':value new transfers', ['value' => count($transfers)]))
+                                    ->body(__(':value new transactions', ['value' => count($transactions)]))
                                     ->success()
                                     ->send();
                             }
