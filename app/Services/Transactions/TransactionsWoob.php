@@ -5,12 +5,13 @@ namespace App\Services\Transactions;
 use App\Models\Asset;
 use App\Models\Transaction;
 use App\Enums\TransactionType;
-use App\Services\TransactionsInterface;
-use App\Exceptions\TransactionsException;
-use App\Settings\IntegrationsSettings;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Illuminate\Support\Facades\Log;
+use App\Helpers\Logs\LogTransactions;
+use Filament\Forms\Components\Toggle;
+use App\Settings\IntegrationsSettings;
+use App\Services\TransactionsInterface;
+use Filament\Forms\Components\TextInput;
+use App\Exceptions\TransactionsException;
 use ApollocatDev\FilamentSettings\Facades\FilamentSettings;
 
 class TransactionsWoob implements TransactionsInterface
@@ -97,7 +98,7 @@ class TransactionsWoob implements TransactionsInterface
 
         // Log skipped duplicates for information
         if ($skippedDuplicates > 0) {
-            Log::info("Skipped {$skippedDuplicates} duplicate transactions for asset {$this->asset->name}");
+            LogTransactions::info("Skipped {$skippedDuplicates} duplicate transactions for asset {$this->asset->name}");
         }
     }
 
