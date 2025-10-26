@@ -5,7 +5,6 @@ namespace App\Filament\Resources\TaxonomyResource\Pages;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use App\Filament\Resources\TaxonomyResource;
-use App\Filament\Resources\TaxonomyResource\Pages\TaxonomyTagResource;
 
 class EditTaxonomy extends EditRecord
 {
@@ -14,10 +13,10 @@ class EditTaxonomy extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\Action::make('manage_tags')
-                ->label('Manage Tags')
-                ->url(fn() => TaxonomyTagResource::getUrl('index', ['taxonomy' => $this->record->id]))
-                ->icon('heroicon-o-tag'),
+            // Actions\Action::make('manage_tags')
+            //     ->label('Manage Tags')
+            //     ->url(fn() => TaxonomyTagResource::getUrl('index', ['taxonomy' => $this->record->id]))
+            //     ->icon('heroicon-o-tag'),
             Actions\DeleteAction::make(),
         ];
     }

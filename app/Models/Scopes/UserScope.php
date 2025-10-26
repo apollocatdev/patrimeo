@@ -15,7 +15,7 @@ class UserScope implements Scope
     public function apply(Builder $builder, Model $model): void
     {
         if (Auth::hasUser()) {
-            $builder->where('user_id', Auth::user()->id);
+            $builder->where($builder->qualifyColumn('user_id'), Auth::user()->id);
         }
     }
 }

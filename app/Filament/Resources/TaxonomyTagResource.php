@@ -4,22 +4,24 @@ namespace App\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Tables;
-use App\Models\TaxonomyTag;
 use Filament\Tables\Table;
+use App\Models\TaxonomyTag;
+use App\Enums\TaxonomyTypes;
 use Filament\Schemas\Schema;
 use Filament\Actions\EditAction;
 use Filament\Resources\Resource;
 use Filament\Actions\DeleteAction;
+use Filament\Tables\Grouping\Group;
 use Filament\Actions\BulkActionGroup;
+use Filament\Forms\Components\Select;
 use Filament\Actions\DeleteBulkAction;
+use Filament\Forms\Components\Repeater;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\CheckboxList;
-use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\TextInput as FormsTextInput;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\CheckboxList;
 use App\Filament\Resources\TaxonomyTagResource\Pages;
+use Filament\Forms\Components\TextInput as FormsTextInput;
 
 class TaxonomyTagResource extends Resource
 {
@@ -50,7 +52,7 @@ class TaxonomyTagResource extends Resource
                         $taxonomyId = $get('taxonomy_id');
                         if (!$taxonomyId) return false;
                         $taxonomy = \App\Models\Taxonomy::find($taxonomyId);
-                        return $taxonomy && !$taxonomy->weighted;
+                        return $taxonomy && $taxonomy->type === TaxonomyTypes::ASSETS && !$taxonomy->weighted;
                     })
                     ->helperText('Select assets to associate with this tag (only for non-weighted taxonomies)')
                     ->searchable(),
@@ -64,10 +66,16 @@ class TaxonomyTagResource extends Resource
                 TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('taxonomy.type')
+                    ->label('Taxonomy type')
+                    ->searchable()
+                    ->sortable()
+                    ->color('primary'),
                 TextColumn::make('taxonomy.name')
                     ->label('Taxonomy')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->color('primary'),
                 TextColumn::make('taxonomy.weighted')
                     ->label('Weighted')
                     ->badge()
@@ -77,11 +85,17 @@ class TaxonomyTagResource extends Resource
                     ->label('Assets Count')
                     ->counts('assets')
                     ->sortable(),
+                TextColumn::make('transactions_count')
+                    ->label('Transactions Count')
+                    ->counts('transactions')
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->groups([Group::make('taxonomy.name')->label('Taxonomy')])
+            ->defaultGroup('taxonomy.name')
             ->filters([
                 Tables\Filters\SelectFilter::make('taxonomy')
                     ->relationship('taxonomy', 'name')
@@ -94,21 +108,21 @@ class TaxonomyTagResource extends Resource
                     ->falseLabel('Non-weighted only')
                     ->query(function (Builder $query, array $data): Builder {
                         return $query->whereHas('taxonomy', function (Builder $query) use ($data) {
-                            $query->where('weighted', $data['value'] ?? false);
+                            $query->where('taxonomies.weighted', $data['value'] ?? false);
                         });
                     })
                     ->native(false),
             ])
-            ->actions([
+            ->recordActions([
                 EditAction::make(),
                 DeleteAction::make(),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
             ])
-            ->defaultSort('name');
+            ->defaultSort('taxonomy.name');
     }
 
     public static function getPages(): array

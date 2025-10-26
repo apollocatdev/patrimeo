@@ -94,7 +94,6 @@ class TransactionResource extends Resource
                                     });
                             })
                             ->searchable()
-                            ->preload()
                             ->helperText('Select tags to categorize this transaction'),
                     ]),
             ]);

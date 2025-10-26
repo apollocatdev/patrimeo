@@ -6,21 +6,26 @@ use Filament\Forms;
 use Filament\Tables;
 use App\Models\Taxonomy;
 use Filament\Tables\Table;
+use App\Enums\TaxonomyTypes;
 use Filament\Schemas\Schema;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Resources\Resource;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\Action;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\IconEntry;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
 use Filament\Actions\DeleteBulkAction;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\Select;
-use Filament\Tables\Columns\BooleanColumn;
-use App\Enums\TaxonomyTypes;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\TaxonomyResource\Pages;
 use App\Filament\Resources\TaxonomyResource\RelationManagers;
+use App\Filament\Resources\TaxonomyResource\RelationManagers\TagsRelationManager;
 
 class TaxonomyResource extends Resource
 {
@@ -52,8 +57,34 @@ class TaxonomyResource extends Resource
                     ->label('Weighted Taxonomy')
                     ->helperText('Weighted taxonomies allow numeric values for tags, while non-weighted taxonomies are simple associations. Transactions taxonomies are automatically unweighted.')
                     ->default(false)
-                    ->disabled(fn(callable $get) => $get('type') === TaxonomyTypes::TRANSACTIONS),
+                    ->hidden(fn(callable $get) => $get('type') === TaxonomyTypes::TRANSACTIONS),
             ])->columns(1);
+    }
+
+    public static function infolist(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                TextEntry::make('name')
+                    ->label('Name')
+                    ->size('lg')
+                    ->weight('bold'),
+                TextEntry::make('type')
+                    ->label('Type')
+                    ->badge()
+                    ->color(fn(TaxonomyTypes $state): string => match ($state) {
+                        TaxonomyTypes::ASSETS => 'success',
+                        TaxonomyTypes::TRANSACTIONS => 'info',
+                    }),
+                IconEntry::make('weighted')
+                    ->label('Weighted Taxonomy')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->trueColor('success')
+                    ->falseColor('danger'),
+            ])
+            ->columns(3);
     }
 
     public static function table(Table $table): Table
@@ -70,8 +101,9 @@ class TaxonomyResource extends Resource
                         TaxonomyTypes::TRANSACTIONS => 'info',
                     })
                     ->sortable(),
-                BooleanColumn::make('weighted')
+                IconColumn::make('weighted')
                     ->label('Weighted')
+                    ->boolean()
                     ->sortable(),
                 TextColumn::make('tags_count')
                     ->label('Tags Count')
@@ -90,11 +122,16 @@ class TaxonomyResource extends Resource
                     ->falseLabel('Non-weighted only')
                     ->native(false),
             ])
-            ->actions([
+            ->recordActions([
+                Action::make('manage')
+                    ->label('Manage')
+                    ->icon('heroicon-o-cog-6-tooth')
+                    ->color('primary')
+                    ->url(fn(Taxonomy $record): string => static::getUrl('view', ['record' => $record])),
                 EditAction::make(),
                 DeleteAction::make(),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
@@ -105,7 +142,7 @@ class TaxonomyResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            TagsRelationManager::class,
         ];
     }
 
@@ -115,6 +152,7 @@ class TaxonomyResource extends Resource
             'index' => Pages\ListTaxonomies::route('/'),
             'create' => Pages\CreateTaxonomy::route('/create'),
             'edit' => Pages\EditTaxonomy::route('/{record}/edit'),
+            'view' => Pages\ViewTaxonomy::route('/{record}'),
         ];
     }
 }
