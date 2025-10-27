@@ -1,0 +1,33 @@
+version: "3.9"
+
+services:
+  patrimeo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - APP_VERSION=${APP_VERSION:-0.0.0}
+    container_name: patrimeo
+    env_file:
+      - .env
+    environment:
+      TZ: Europe/Paris
+      APP_ENV: production
+      APP_DEBUG: "false"
+    ports:
+      - "8080:80"
+    volumes:
+      # Base de données SQLite (fichier unique)
+      - ./storage/app/database.sqlite:/app/storage/app/database.sqlite
+      # Configurations persistantes de woob (sur l’hôte)
+      - ${HOME}/.config/woob/backends:/home/app/.config/woob/backends
+      # Optionnel : logs locaux
+      - ./docker-runtime/supervisor:/var/log/supervisor
+    restart: unless-stopped
+
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 15s

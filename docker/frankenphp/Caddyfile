@@ -1,0 +1,17 @@
+{
+	# options globales éventuelles
+	# admin off
+}
+
+:80 {
+	root * /app/public
+	encode zstd gzip
+	php_server {
+		# essaie le fichier demandé, sinon index.php
+		try_files {path} /index.php
+	}
+	handle_path / {
+		rewrite * {path}
+	}
+	file_server
+}
