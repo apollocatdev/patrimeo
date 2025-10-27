@@ -31,10 +31,24 @@ RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
 
 # Préparer l’app
 WORKDIR /app
+
+# 1) Installer uniquement les vendors (sans scripts) pour éviter d'appeler artisan trop tôt
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --prefer-dist --optimize-autoloader --no-scripts
+
+# 2) Copier le reste de l'app
 COPY . /app
 
-# Dépendances PHP
-RUN composer install --no-dev --prefer-dist --optimize-autoloader
+# 3) Préparer les répertoires Laravel AVANT d'exécuter artisan
+RUN mkdir -p storage/framework/{cache,sessions,views} storage/logs bootstrap/cache \
+ && chown -R www-data:www-data storage bootstrap/cache
+
+# 4) Fournir un .env minimal pendant le build (facultatif mais utile)
+#    (ne gêne pas ton .env runtime monté après)
+RUN [ -f .env ] || cp .env.example .env || true
+
+# 5) Lancer maintenant les scripts composer (package:discover) en toute sécurité
+RUN composer run-script post-autoload-dump || true
 
 # woob dans un venv Python
 RUN python3 -m venv /opt/woob-venv \
