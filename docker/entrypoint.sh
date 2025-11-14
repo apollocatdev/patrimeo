@@ -1,30 +1,70 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# TZ
-if [ -n "${TZ:-}" ]; then
-  ln -snf "/usr/share/zoneinfo/$TZ" /etc/localtime && echo "$TZ" > /etc/timezone || true
+echo "🌍 Starting Patrimeo container..."
+
+mkdir -p /tmp/caddy/{caddy,locks,certificates} && chmod 1777 /tmp/caddy
+
+
+# Ensure /app is working directory
+cd /app
+
+# ───────────────────────────────────────────────
+# .env handling
+# ───────────────────────────────────────────────
+if [ ! -f .env ]; then
+  echo "⚙️  No .env found, creating it..."
+  cp .env.example .env
+  ls -l |grep .env 
+  cat .env
+  rm -f bootstrap/cache/config.php 2>/dev/null || true
+  php artisan key:generate --force
 fi
 
-# Dossiers Laravel
-mkdir -p /app/storage/framework/{cache,sessions,views} /app/storage/logs
-chown -R www-data:www-data /app/storage /app/bootstrap/cache
 
-# DB SQLite mappée: garantir l’existence du fichier
-if [ ! -f /app/storage/app/database.sqlite ]; then
-  install -o www-data -g www-data -m 660 /dev/null /app/storage/app/database.sqlite
+# ───────────────────────────────────────────────
+# Laravel storage
+# ───────────────────────────────────────────────
+echo "📁 Preparing Laravel storage directories..."
+mkdir -p storage/app \
+         storage/framework/{cache,sessions,views} \
+         storage/logs
+
+
+
+
+# ───────────────────────────────────────────────
+# Database: initialize only if file does not exist
+# ───────────────────────────────────────────────
+DB_FILE="storage/app/database.sqlite"
+
+if [ ! -f "$DB_FILE" ]; then
+  echo "🆕 No database found → creating + migrate + seed"
+  : > "$DB_FILE"
+  php artisan migrate --force || true
+  php artisan db:seed --force || true
+else
+  echo "✅ Existing database detected → skipping migrate and seed"
 fi
 
-# Optimisations Laravel
-su -s /bin/bash -c "php artisan config:clear || true" www-data
-su -s /bin/bash -c "php artisan route:clear || true" www-data
-su -s /bin/bash -c "php artisan view:clear || true" www-data
-su -s /bin/bash -c "php artisan migrate --force || true" www-data
-su -s /bin/bash -c "php artisan config:cache || true" www-data
-su -s /bin/bash -c "php artisan route:cache || true" www-data
+# ───────────────────────────────────────────────
+# Laravel caches
+# ───────────────────────────────────────────────
+echo "🧩 Rebuilding Laravel caches..."
+php artisan config:clear || true
+php artisan route:clear  || true
+php artisan view:clear   || true
+php artisan config:cache || true
+php artisan route:cache  || true
 
-# Préparer répertoire woob (persisté côté host via bind)
+# ───────────────────────────────────────────────
+# Woob config directory
+# ───────────────────────────────────────────────
+echo "🐍 Checking Woob config directory..."
 mkdir -p /home/app/.config/woob/backends
-chown -R www-data:www-data /home/app/.config || true
 
+# ───────────────────────────────────────────────
+# Start supervisor
+# ───────────────────────────────────────────────
+echo "🚀 Starting Supervisor (FrankenPHP, Queue, Scheduler)..."
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf

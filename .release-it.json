@@ -8,7 +8,7 @@
     },
     "npm": {
         "publish": false,
-	"skipChecks": true
+        "skipChecks": true
     },
     "plugins": {
         "@release-it/bumper": {
@@ -32,7 +32,12 @@
     },
     "hooks": {
         "after:release": [
-            "echo '🚀 Nouvelle version ${version} publiée !'"
+            "echo '🚀 Nouvelle version ${version} publiée !'",
+            "echo '🔨 Construction et push de l’image Docker…'",
+            "npm run docker:build",
+            "echo '🚢 Déploiement de la nouvelle image sur la préproduction…'",
+            "npm run docker:deploy",
+            "echo '✅ Déploiement terminé.'"
         ]
     }
 }

@@ -5,6 +5,8 @@
         "build": "vite build",
         "dev": "vite",
         "release": "dotenv -e .env -- release-it",
+        "docker:build": "dotenv -e .env -- bash ./docker/docker-build-push.sh",
+        "docker:deploy": "dotenv -e .env -- bash ./docker/deploy-ssh.sh",
         "docs:dev": "vitepress dev ../web/docs",
         "docs:build": "vitepress build ../web/docs",
         "docs:preview": "vitepress preview ../web/docs"

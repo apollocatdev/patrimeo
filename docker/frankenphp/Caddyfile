@@ -1,17 +1,17 @@
 {
-	# options globales éventuelles
-	# admin off
+	admin off
+	storage file_system {
+		root /tmp/caddy
+	}
 }
 
-:80 {
+:8080 {
 	root * /app/public
 	encode zstd gzip
+
 	php_server {
-		# essaie le fichier demandé, sinon index.php
 		try_files {path} /index.php
 	}
-	handle_path / {
-		rewrite * {path}
-	}
+
 	file_server
 }

@@ -1,28 +1,11 @@
-version: "3.9"
-
 services:
   patrimeo:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        - APP_VERSION=${APP_VERSION:-0.0.0}
-    container_name: patrimeo
-    env_file:
-      - .env
-    environment:
-      TZ: Europe/Paris
-      APP_ENV: production
-      APP_DEBUG: "false"
+    image: ghcr.io/apollocatdev/patrimeo:latest
     ports:
-      - "8080:80"
+      - "11000:8080"
     volumes:
-      # Base de données SQLite (fichier unique)
-      - ./storage/app/database.sqlite:/app/storage/app/database.sqlite
-      # Configurations persistantes de woob (sur l’hôte)
-      - ${HOME}/.config/woob/backends:/home/app/.config/woob/backends
-      # Optionnel : logs locaux
-      - ./docker-runtime/supervisor:/var/log/supervisor
+      - ./storage:/app/storage
+      - ./woob:/home/app/.config/woob
     restart: unless-stopped
 
     healthcheck:

@@ -1,4 +1,4 @@
-# Image monolithique: FrankenPHP (Debian) + PHP 8.4 + Supervisor + Cron + Python + woob
+# Monolith: FrankenPHP (Debian) + PHP 8.4 + Supervisor + Python + woob
 FROM dunglas/frankenphp:1-php8.4
 
 ARG APP_VERSION=0.0.0
@@ -11,64 +11,64 @@ ENV DEBIAN_FRONTEND=noninteractive \
     TZ=Europe/Paris \
     PHP_MEMORY_LIMIT=512M
 
-# dépendances système & PHP extensions utiles à Laravel
+
+
+# --- System deps (root) ---
 RUN apt-get update && apt-get install -y --no-install-recommends \
-      ca-certificates curl git unzip zip tzdata locales supervisor cron sqlite3 \
+      ca-certificates curl git unzip zip tzdata locales supervisor sqlite3 \
       python3 python3-venv python3-pip \
       libicu-dev libzip-dev zlib1g-dev \
       $PHPIZE_DEPS \
     && rm -rf /var/lib/apt/lists/*
 
-# Activer intl + zip (compilation depuis les sources fournis par l'image)
-RUN docker-php-ext-install -j$(nproc) intl zip
+# PHP extensions
+RUN docker-php-ext-install -j"$(nproc)" intl zip
 
-# Composer (depuis l'image officielle PHP fournie par FrankenPHP)
+# Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Activer un php.ini de prod
+# php.ini prod
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
  && echo "memory_limit=${PHP_MEMORY_LIMIT}" > "$PHP_INI_DIR/conf.d/zz-memory.ini"
 
-# Préparer l’app
-WORKDIR /app
+# --- Create non-root app user (fixed UID/GID for predictability) ---
+# (Tu peux changer 1000:1000 si besoin)
+RUN addgroup --gid 1000 app \
+ && adduser  --uid 1000 --gid 1000 --disabled-password --gecos "" app
 
-# 1) Installer uniquement les vendors (sans scripts) pour éviter d'appeler artisan trop tôt
-COPY composer.json composer.lock ./
-RUN composer install --no-dev --prefer-dist --optimize-autoloader --no-scripts
-
-# 2) Copier le reste de l'app
-COPY . /app
-
-# 3) Préparer les répertoires Laravel AVANT d'exécuter artisan
-RUN mkdir -p storage/framework/{cache,sessions,views} storage/logs bootstrap/cache \
- && chown -R www-data:www-data storage bootstrap/cache
-
-# 4) Fournir un .env minimal pendant le build (facultatif mais utile)
-#    (ne gêne pas ton .env runtime monté après)
-RUN [ -f .env ] || cp .env.example .env || true
-
-# 5) Lancer maintenant les scripts composer (package:discover) en toute sécurité
-RUN composer run-script post-autoload-dump || true
-
-# woob dans un venv Python
+# --- Python woob (root) ---
 RUN python3 -m venv /opt/woob-venv \
  && /opt/woob-venv/bin/pip install --upgrade pip \
  && /opt/woob-venv/bin/pip install --no-cache-dir woob
 
-# Caddyfile (FrankenPHP)
-# Voir: https://frankenphp.dev/docs/laravel/
+# --- System configs (root) ---
 COPY docker/frankenphp/Caddyfile /etc/frankenphp/Caddyfile
-
-# Cron (scheduler Laravel)
-COPY docker/cron/laravel /etc/cron.d/laravel
-RUN chmod 0644 /etc/cron.d/laravel && crontab /etc/cron.d/laravel
-
-# Supervisor (multi-process: frankenphp + cron + queue worker)
 COPY docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
-# Entrypoint
 COPY docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
+
+# --- App layer ---
+WORKDIR /app
+
+# Make sure /app is owned by app before switching user
+RUN mkdir -p /app && chown app:app /app
+
+
+# ⚡ Switch to non-root BEFORE copying code to avoid any chown -R later
+USER app
+# RUN mkdir -p /app/.caddy
+
+# Install vendors (no scripts) with only composer files for better caching
+COPY --chown=app:app composer.json composer.lock ./
+RUN composer install --no-dev --prefer-dist --optimize-autoloader --no-scripts
+
+# Copy the rest of the application as app user
+COPY --chown=app:app . /app
+
+# Optional: run composer post-autoload scripts (still as app)
+RUN composer run-script post-autoload-dump || true
+
+# No cron here: scheduler runs via Supervisor (`php artisan schedule:work`)
 
 EXPOSE 80
 CMD ["/entrypoint.sh"]
