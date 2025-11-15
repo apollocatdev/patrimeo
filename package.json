@@ -5,6 +5,7 @@
         "build": "vite build",
         "dev": "vite",
         "release": "dotenv -e .env -- release-it",
+        "release:all": "npm run release && npm run docker:build && npm run docker:deploy",
         "docker:build": "dotenv -e .env -- bash ./docker/docker-build-push.sh",
         "docker:deploy": "dotenv -e .env -- bash ./docker/deploy-ssh.sh",
         "docs:dev": "vitepress dev ../web/docs",
