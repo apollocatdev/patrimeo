@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/apollocatdev/patrimeo/compare/v0.3.0...v0.3.1) (2025-11-15)
+
+
+### Bug Fixes
+
+* Old filenames related to cotations ([7e64950](https://github.com/apollocatdev/patrimeo/commit/7e649500847bb0144b74dd9f7954626a893cc4fb))
+
 # 0.3.0 (2025-10-27)
 
 
