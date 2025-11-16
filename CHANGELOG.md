@@ -1,5 +1,7 @@
 # Changelog
 
+## [0.3.2](https://github.com/apollocatdev/patrimeo/compare/v0.3.1...v0.3.2) (2025-11-16)
+
 ## [0.3.1](https://github.com/apollocatdev/patrimeo/compare/v0.3.0...v0.3.1) (2025-11-15)
 
 
