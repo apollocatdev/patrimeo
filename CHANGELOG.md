@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.16](https://github.com/apollocatdev/patrimeo/compare/v0.3.15...v0.3.16) (2025-11-16)
+
+
+### Bug Fixes
+
+* docker running under root ([989033a](https://github.com/apollocatdev/patrimeo/commit/989033a580ae3106b3ba11a09d0f8611d9941bf9))
+
 ## [0.3.15](https://github.com/apollocatdev/patrimeo/compare/v0.3.14...v0.3.15) (2025-11-16)
 
 
