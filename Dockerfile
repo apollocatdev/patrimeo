@@ -53,7 +53,11 @@ COPY docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh \
     && rm -f /etc/nginx/sites-enabled/default \
-    && ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+    && ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default \
+    && mkdir -p /var/log/nginx \
+         /var/lib/nginx/{body,fastcgi,proxy,uwsgi,scgi} \
+         /run/nginx \
+    && chown -R www-data:www-data /var/log/nginx /var/lib/nginx /run/nginx
 
 # --- App layer ---
 WORKDIR /app

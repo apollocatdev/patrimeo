@@ -3,12 +3,6 @@ set -euo pipefail
 
 echo "🌍 Starting Patrimeo container..."
 
-# Create Nginx directories
-mkdir -p /var/log/nginx \
-         /var/lib/nginx/{body,fastcgi,proxy,uwsgi,scgi} \
-         /run/nginx
-chown -R www-data:www-data /var/log/nginx /var/lib/nginx /run/nginx || true
-
 # Ensure /app is working directory
 cd /app
 
