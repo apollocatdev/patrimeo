@@ -69,7 +69,9 @@ RUN chown -R root:root /app && \
     find /app -type d -exec chmod 755 {} \; && \
     find /app -type f -exec chmod 644 {} \; && \
     chmod -R 775 /app/storage /app/bootstrap/cache && \
-    chown -R www-data:www-data /app/storage /app/bootstrap/cache
+    chown -R www-data:www-data /app/storage /app/bootstrap/cache && \
+    chmod 755 /app/public && \
+    chmod 644 /app/public/index.php
 
 # Optional: run composer post-autoload scripts
 RUN composer run-script post-autoload-dump || true
