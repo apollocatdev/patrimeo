@@ -12,6 +12,7 @@
 	php_server {
 		try_files {path} /index.php
         worker {
+            file /app/public/index.php
             num 4
         }
 	}
