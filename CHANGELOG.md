@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.3](https://github.com/apollocatdev/patrimeo/compare/v0.3.2...v0.3.3) (2025-11-16)
+
+
+### Performance Improvements
+
+* polling for notifications set to 15s instead of 5s ([4885090](https://github.com/apollocatdev/patrimeo/commit/48850905dc89a9c77cc93c8d39df7ff00e046056))
+
 ## [0.3.2](https://github.com/apollocatdev/patrimeo/compare/v0.3.1...v0.3.2) (2025-11-16)
 
 ## [0.3.1](https://github.com/apollocatdev/patrimeo/compare/v0.3.0...v0.3.1) (2025-11-15)
