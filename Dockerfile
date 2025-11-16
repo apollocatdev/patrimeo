@@ -43,12 +43,13 @@ RUN ln -s /opt/woob-venv/bin/woob /usr/bin/woob
 # --- System configs (root) ---
 COPY docker/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY docker/nginx/default.conf /etc/nginx/sites-available/default
-COPY docker/php-fpm/www.conf /usr/local/etc/php-fpm.d/www.conf
+COPY docker/php-fpm/www.conf /usr/local/etc/php-fpm.d/zz-www.conf
 COPY docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh \
     && rm -f /etc/nginx/sites-enabled/default \
-    && ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+    && ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default \
+    && rm -f /usr/local/etc/php-fpm.d/www.conf.default /usr/local/etc/php-fpm.d/www.conf
 
 # --- App layer ---
 WORKDIR /app
