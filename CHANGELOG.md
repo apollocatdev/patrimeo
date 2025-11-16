@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.11](https://github.com/apollocatdev/patrimeo/compare/v0.3.10...v0.3.11) (2025-11-16)
+
+
+### Bug Fixes
+
+* docker nginx config ([e071e44](https://github.com/apollocatdev/patrimeo/commit/e071e44e1c348be1d1d7a06c4401daaff449846a))
+
 ## [0.3.10](https://github.com/apollocatdev/patrimeo/compare/v0.3.9...v0.3.10) (2025-11-16)
 
 
