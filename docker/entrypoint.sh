@@ -3,6 +3,10 @@ set -euo pipefail
 
 echo "🌍 Starting Patrimeo container..."
 
+# Create PHP-FPM socket directory
+mkdir -p /run/php
+chown www-data:www-data /run/php
+
 # Ensure /app is working directory
 cd /app
 
