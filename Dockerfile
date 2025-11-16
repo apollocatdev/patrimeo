@@ -56,7 +56,7 @@ RUN chmod +x /entrypoint.sh \
     && ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default \
     && mkdir -p /run/nginx \
          /tmp/nginx-{client-body,proxy,fastcgi,uwsgi,scgi} \
-    && chown -R www-data:www-data /run/nginx \
+    && chown -R root:root /run/nginx \
     && chmod 1777 /tmp/nginx-*
 
 # --- App layer ---
