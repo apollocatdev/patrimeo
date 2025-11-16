@@ -1,5 +1,5 @@
-# Monolith: FrankenPHP (Debian) + PHP 8.4 + Supervisor + Python + woob
-FROM dunglas/frankenphp:1-php8.4
+# Monolith: Nginx + PHP-FPM 8.4 + Supervisor + Python + woob
+FROM php:8.4-fpm
 
 ARG APP_VERSION=0.0.0
 LABEL org.opencontainers.image.version="${APP_VERSION}" \
@@ -17,6 +17,8 @@ ENV DEBIAN_FRONTEND=noninteractive \
 RUN apt-get update && apt-get install -y --no-install-recommends \
       ca-certificates curl git unzip zip tzdata locales supervisor sqlite3 \
       python3 python3-venv python3-pip \
+      nginx \
+      vim-tiny procps \
       libicu-dev libzip-dev zlib1g-dev \
       $PHPIZE_DEPS \
     && rm -rf /var/lib/apt/lists/*
@@ -44,10 +46,14 @@ RUN python3 -m venv /opt/woob-venv \
 RUN ln -s /opt/woob-venv/bin/woob /usr/bin/woob
 
 # --- System configs (root) ---
-COPY docker/frankenphp/Caddyfile /etc/frankenphp/Caddyfile
+COPY docker/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY docker/nginx/default.conf /etc/nginx/sites-available/default
+COPY docker/php-fpm/www.conf /usr/local/etc/php-fpm.d/www.conf
 COPY docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY docker/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+RUN chmod +x /entrypoint.sh \
+    && rm -f /etc/nginx/sites-enabled/default \
+    && ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
 # --- App layer ---
 WORKDIR /app
@@ -58,7 +64,6 @@ RUN mkdir -p /app && chown app:app /app
 
 # ⚡ Switch to non-root BEFORE copying code to avoid any chown -R later
 USER app
-# RUN mkdir -p /app/.caddy
 
 # Install vendors (no scripts) with only composer files for better caching
 COPY --chown=app:app composer.json composer.lock ./

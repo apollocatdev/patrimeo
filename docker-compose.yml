@@ -2,7 +2,7 @@ services:
   patrimeo:
     image: ghcr.io/apollocatdev/patrimeo:latest
     ports:
-      - "11000:8080"
+      - "11000:80"
     volumes:
       - ./storage:/app/storage
       - ./woob:/home/app/.config/woob

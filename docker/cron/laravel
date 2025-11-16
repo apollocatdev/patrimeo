@@ -1,1 +1,0 @@
-* * * * * www-data cd /app && php artisan schedule:run >> /var/log/cron-laravel.log 2>&1

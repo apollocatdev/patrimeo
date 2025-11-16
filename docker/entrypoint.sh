@@ -3,8 +3,9 @@ set -euo pipefail
 
 echo "🌍 Starting Patrimeo container..."
 
-mkdir -p /tmp/caddy/{caddy,locks,certificates} && chmod 1777 /tmp/caddy
-
+# Create Nginx log directories
+mkdir -p /var/log/nginx
+chown -R www-data:www-data /var/log/nginx || true
 
 # Ensure /app is working directory
 cd /app
@@ -76,5 +77,5 @@ mkdir -p /home/app/.config/woob/backends
 # ───────────────────────────────────────────────
 # Start supervisor
 # ───────────────────────────────────────────────
-echo "🚀 Starting Supervisor (FrankenPHP, Queue, Scheduler)..."
+echo "🚀 Starting Supervisor (Nginx, PHP-FPM, Queue, Scheduler)..."
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
