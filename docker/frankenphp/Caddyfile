@@ -11,7 +11,9 @@
 
 	php_server {
 		try_files {path} /index.php
-        workers auto
+        worker {
+            num 4
+        }
 	}
 
 	file_server
