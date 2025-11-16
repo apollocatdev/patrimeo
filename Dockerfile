@@ -41,6 +41,8 @@ RUN python3 -m venv /opt/woob-venv \
  && /opt/woob-venv/bin/pip install --upgrade pip \
  && /opt/woob-venv/bin/pip install --no-cache-dir woob
 
+RUN ln -s /opt/woob-venv/bin/woob /usr/bin/woob
+
 # --- System configs (root) ---
 COPY docker/frankenphp/Caddyfile /etc/frankenphp/Caddyfile
 COPY docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
