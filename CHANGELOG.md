@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.20](https://github.com/apollocatdev/patrimeo/compare/v0.3.19...v0.3.20) (2025-11-16)
+
+
+### Bug Fixes
+
+* nginx configuration ([e9832ab](https://github.com/apollocatdev/patrimeo/commit/e9832ab0d3128a211ae2afbcb411269bc23348bd))
+
 ## [0.3.19](https://github.com/apollocatdev/patrimeo/compare/v0.3.18...v0.3.19) (2025-11-16)
 
 
