@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.15](https://github.com/apollocatdev/patrimeo/compare/v0.3.14...v0.3.15) (2025-11-16)
+
+
+### Bug Fixes
+
+* supervisord issues ([52039e5](https://github.com/apollocatdev/patrimeo/commit/52039e5477af7f80b2dd141d033935c60d363dfc))
+
 ## [0.3.14](https://github.com/apollocatdev/patrimeo/compare/v0.3.13...v0.3.14) (2025-11-16)
 
 
