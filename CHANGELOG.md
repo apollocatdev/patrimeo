@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.8](https://github.com/apollocatdev/patrimeo/compare/v0.3.7...v0.3.8) (2025-11-16)
+
+
+### Bug Fixes
+
+* migrate from frankenphp to the good old nginx ([c595be1](https://github.com/apollocatdev/patrimeo/commit/c595be1d744a14b9a9d897d2311e6fdec5a2e8b0))
+
 ## [0.3.7](https://github.com/apollocatdev/patrimeo/compare/v0.3.6...v0.3.7) (2025-11-16)
 
 ## [0.3.6](https://github.com/apollocatdev/patrimeo/compare/v0.3.5...v0.3.6) (2025-11-16)
