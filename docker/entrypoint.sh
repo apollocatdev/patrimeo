@@ -69,6 +69,9 @@ php artisan config:cache || true
 php artisan route:cache  || true
 php artisan view:cache || true
 php artisan event:cache || true
+# Fix permissions after cache creation
+chown -R www-data:www-data bootstrap/cache storage
+chmod -R 775 bootstrap/cache storage
 
 # ───────────────────────────────────────────────
 # Woob config directory
