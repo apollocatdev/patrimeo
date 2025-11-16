@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.14](https://github.com/apollocatdev/patrimeo/compare/v0.3.13...v0.3.14) (2025-11-16)
+
+
+### Bug Fixes
+
+* php-fpm file instead of port ([da722d4](https://github.com/apollocatdev/patrimeo/commit/da722d4a3d9776cfd5a67d4a6b8e6c40d00974b2))
+
 ## [0.3.13](https://github.com/apollocatdev/patrimeo/compare/v0.3.12...v0.3.13) (2025-11-16)
 
 
