@@ -33,11 +33,6 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
  && echo "memory_limit=${PHP_MEMORY_LIMIT}" > "$PHP_INI_DIR/conf.d/zz-memory.ini"
 
-# --- Create non-root app user (fixed UID/GID for predictability) ---
-# (Tu peux changer 1000:1000 si besoin)
-RUN addgroup --gid 1000 app \
- && adduser  --uid 1000 --gid 1000 --disabled-password --gecos "" app
-
 # --- Python woob (root) ---
 RUN python3 -m venv /opt/woob-venv \
  && /opt/woob-venv/bin/pip install --upgrade pip \
@@ -53,30 +48,29 @@ COPY docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh \
     && rm -f /etc/nginx/sites-enabled/default \
-    && ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default \
-    && mkdir -p /run/nginx \
-         /tmp/nginx-{client-body,proxy,fastcgi,uwsgi,scgi} \
-    && chown -R root:root /run/nginx \
-    && chmod 1777 /tmp/nginx-*
+    && ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
 # --- App layer ---
 WORKDIR /app
 
-# Make sure /app is owned by app before switching user
-RUN mkdir -p /app && chown app:app /app
-
-
-# ⚡ Switch to non-root BEFORE copying code to avoid any chown -R later
-USER app
+# Create /app with proper permissions (root:root, 755)
+RUN mkdir -p /app && chown root:root /app && chmod 755 /app
 
 # Install vendors (no scripts) with only composer files for better caching
-COPY --chown=app:app composer.json composer.lock ./
+COPY composer.json composer.lock ./
 RUN composer install --no-dev --prefer-dist --optimize-autoloader --no-scripts
 
-# Copy the rest of the application as app user
-COPY --chown=app:app . /app
+# Copy the rest of the application
+COPY . /app
 
-# Optional: run composer post-autoload scripts (still as app)
+# Set proper permissions for /app (readable by www-data, writable by root)
+RUN chown -R root:root /app && \
+    find /app -type d -exec chmod 755 {} \; && \
+    find /app -type f -exec chmod 644 {} \; && \
+    chmod -R 775 /app/storage /app/bootstrap/cache && \
+    chown -R www-data:www-data /app/storage /app/bootstrap/cache
+
+# Optional: run composer post-autoload scripts
 RUN composer run-script post-autoload-dump || true
 
 # No cron here: scheduler runs via Supervisor (`php artisan schedule:work`)

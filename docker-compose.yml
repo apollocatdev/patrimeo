@@ -5,7 +5,7 @@ services:
       - "11000:80"
     volumes:
       - ./storage:/app/storage
-      - ./woob:/home/app/.config/woob
+      - ./woob:/root/.config/woob
     restart: unless-stopped
 
     healthcheck:

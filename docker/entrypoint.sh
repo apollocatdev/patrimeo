@@ -34,6 +34,8 @@ echo "📁 Preparing Laravel storage directories..."
 mkdir -p storage/app \
          storage/framework/{cache,sessions,views} \
          storage/logs
+chown -R www-data:www-data storage bootstrap/cache
+chmod -R 775 storage bootstrap/cache
 
 
 
@@ -68,7 +70,7 @@ php artisan event:cache || true
 # Woob config directory
 # ───────────────────────────────────────────────
 echo "🐍 Checking Woob config directory..."
-mkdir -p /home/app/.config/woob/backends
+mkdir -p /root/.config/woob/backends
 
 # ───────────────────────────────────────────────
 # Start supervisor
