@@ -54,10 +54,9 @@ COPY docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh \
     && rm -f /etc/nginx/sites-enabled/default \
     && ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default \
-    && mkdir -p /var/log/nginx \
-         /run/nginx \
+    && mkdir -p /run/nginx \
          /tmp/nginx-{client-body,proxy,fastcgi,uwsgi,scgi} \
-    && chown -R www-data:www-data /var/log/nginx /run/nginx \
+    && chown -R www-data:www-data /run/nginx \
     && chmod 1777 /tmp/nginx-*
 
 # --- App layer ---
