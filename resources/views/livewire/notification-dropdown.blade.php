@@ -1,5 +1,5 @@
 {{-- NotificationDropdown Component - Using Filament Dropdown --}}
-<x-filament::dropdown wire:poll.5s="loadNotifications" placement="bottom-end" width="lg" class="noblink">
+<x-filament::dropdown wire:poll.15s="loadNotifications" placement="bottom-end" width="lg" class="noblink">
     <x-slot name="trigger">
         <x-filament::button
             icon="heroicon-o-bell"
