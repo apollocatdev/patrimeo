@@ -11,6 +11,7 @@
 
 	php_server {
 		try_files {path} /index.php
+        workers auto
 	}
 
 	file_server
