@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.19](https://github.com/apollocatdev/patrimeo/compare/v0.3.18...v0.3.19) (2025-11-16)
+
+
+### Bug Fixes
+
+* docker php-fpm ([8378512](https://github.com/apollocatdev/patrimeo/commit/837851264cca364f505d677451e826ea090898f1))
+
 ## [0.3.18](https://github.com/apollocatdev/patrimeo/compare/v0.3.17...v0.3.18) (2025-11-16)
 
 ## [0.3.17](https://github.com/apollocatdev/patrimeo/compare/v0.3.16...v0.3.17) (2025-11-16)
