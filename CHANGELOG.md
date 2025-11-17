@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.27](https://github.com/apollocatdev/patrimeo/compare/v0.3.26...v0.3.27) (2025-11-17)
+
+
+### Bug Fixes
+
+* Fix permissions in docker ([f7782e7](https://github.com/apollocatdev/patrimeo/commit/f7782e72a09052a87981097e4ecfd3c6aee87689))
+
 ## [0.3.26](https://github.com/apollocatdev/patrimeo/compare/v0.3.25...v0.3.26) (2025-11-17)
 
 
