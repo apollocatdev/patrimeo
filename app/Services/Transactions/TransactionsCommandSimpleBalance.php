@@ -29,7 +29,7 @@ class TransactionsCommandSimpleBalance implements TransactionsInterface
 
         $output = [];
         $returnCode = 0;
-        exec($command, $output, $returnCode);
+        \exec($command, $output, $returnCode);
 
         if ($returnCode !== 0) {
             throw new TransactionsException($this->asset, 'Command failed with return code ' . $returnCode, null, 'Return code: ' . $returnCode . ' | Output: ' . implode("\n", $output));

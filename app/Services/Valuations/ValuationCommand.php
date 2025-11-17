@@ -35,7 +35,7 @@ class ValuationCommand implements ValuationInterface
 
             $output = [];
             $returnCode = 0;
-            exec($command, $output, $returnCode);
+            \exec($command, $output, $returnCode);
 
             if ($returnCode !== 0) {
                 throw new ValuationException(
