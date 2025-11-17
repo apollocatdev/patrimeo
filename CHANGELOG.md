@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.24](https://github.com/apollocatdev/patrimeo/compare/v0.3.23...v0.3.24) (2025-11-17)
+
+
+### Bug Fixes
+
+* authorize PHP exec in php-fpm ([4f42930](https://github.com/apollocatdev/patrimeo/commit/4f4293025e7baa60fb11ed2660da902ad56d9e36))
+
 ## [0.3.23](https://github.com/apollocatdev/patrimeo/compare/v0.3.22...v0.3.23) (2025-11-17)
 
 
