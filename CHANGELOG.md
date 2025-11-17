@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.26](https://github.com/apollocatdev/patrimeo/compare/v0.3.25...v0.3.26) (2025-11-17)
+
+
+### Bug Fixes
+
+* move /app to /var/www in docker ([0c5d6b2](https://github.com/apollocatdev/patrimeo/commit/0c5d6b2e17f214f235ca0fd826892dc71dfa5a0a))
+
 ## [0.3.25](https://github.com/apollocatdev/patrimeo/compare/v0.3.24...v0.3.25) (2025-11-17)
 
 
