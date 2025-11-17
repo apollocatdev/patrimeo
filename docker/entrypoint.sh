@@ -77,7 +77,6 @@ chmod -R 775 bootstrap/cache storage
 # Woob config directory
 # ───────────────────────────────────────────────
 echo "🐍 Checking Woob config directory..."
-mkdir -p /root/.config/woob/backends
 
 # ───────────────────────────────────────────────
 # Start supervisor
