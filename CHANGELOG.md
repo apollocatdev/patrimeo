@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.25](https://github.com/apollocatdev/patrimeo/compare/v0.3.24...v0.3.25) (2025-11-17)
+
+
+### Bug Fixes
+
+* remove directory creation of woob backends ([af02c4b](https://github.com/apollocatdev/patrimeo/commit/af02c4b59c1f993e38661f390f29a4f55dffa1ab))
+
 ## [0.3.24](https://github.com/apollocatdev/patrimeo/compare/v0.3.23...v0.3.24) (2025-11-17)
 
 
