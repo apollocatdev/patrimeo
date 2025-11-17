@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.23](https://github.com/apollocatdev/patrimeo/compare/v0.3.22...v0.3.23) (2025-11-17)
+
+
+### Bug Fixes
+
+* exec calls namespace ([709cad8](https://github.com/apollocatdev/patrimeo/commit/709cad890d433c5b78e61c2e2e9af48699940302))
+
 ## [0.3.22](https://github.com/apollocatdev/patrimeo/compare/v0.3.21...v0.3.22) (2025-11-16)
 
 ## [0.3.21](https://github.com/apollocatdev/patrimeo/compare/v0.3.20...v0.3.21) (2025-11-16)
