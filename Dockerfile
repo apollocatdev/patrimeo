@@ -63,11 +63,11 @@ USER www-data
 WORKDIR ${APP_DIR}
 
 # Install vendors (no scripts) with only composer files for better caching
-COPY composer.json composer.lock ./
+COPY --chown=www-data:www-data composer.json composer.lock ./
 RUN composer install --no-dev --prefer-dist --optimize-autoloader --no-scripts
 
 # Copy the rest of the application
-COPY . ${APP_DIR}
+COPY --chown=www-data:www-data . ${APP_DIR}
 
 RUN mkdir -p storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache \
