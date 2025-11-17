@@ -4,8 +4,8 @@ services:
     ports:
       - "11000:80"
     volumes:
-      - ./storage:/app/storage
-      - ./woob:/root/.config/woob
+      - ./storage:/var/www/patrimeo/storage
+      - ./woob:/var/www/.config/woob
     restart: unless-stopped
 
     healthcheck:

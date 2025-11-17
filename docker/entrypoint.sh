@@ -7,8 +7,11 @@ echo "🌍 Starting Patrimeo container..."
 mkdir -p /run/php
 chown www-data:www-data /run/php
 
-# Ensure /app is working directory
-cd /app
+APP_DIR="${APP_DIR:-/var/www/patrimeo}"
+WOOB_DIR="${WOOB_DIR:-/var/www/.config/woob}"
+
+# Ensure application working directory
+cd "${APP_DIR}"
 
 # ───────────────────────────────────────────────
 # .env handling
@@ -76,7 +79,10 @@ chmod -R 775 bootstrap/cache storage
 # ───────────────────────────────────────────────
 # Woob config directory
 # ───────────────────────────────────────────────
-echo "🐍 Checking Woob config directory..."
+echo "🐍 Ensuring Woob config directory at ${WOOB_DIR}..."
+mkdir -p "${WOOB_DIR}"
+chown -R www-data:www-data "${WOOB_DIR}"
+chmod 775 "${WOOB_DIR}"
 
 # ───────────────────────────────────────────────
 # Start supervisor

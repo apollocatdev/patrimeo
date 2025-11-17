@@ -9,7 +9,10 @@ LABEL org.opencontainers.image.version="${APP_VERSION}" \
 
 ENV DEBIAN_FRONTEND=noninteractive \
     TZ=Europe/Paris \
-    PHP_MEMORY_LIMIT=512M
+    PHP_MEMORY_LIMIT=512M \
+    APP_DIR=/var/www/patrimeo \
+    XDG_CONFIG_HOME=/var/www/.config \
+    WOOB_DIR=/var/www/.config/woob
 
 
 
@@ -52,26 +55,26 @@ RUN chmod +x /entrypoint.sh \
     && rm -f /usr/local/etc/php-fpm.d/www.conf.default /usr/local/etc/php-fpm.d/www.conf
 
 # --- App layer ---
-WORKDIR /app
+RUN mkdir -p ${APP_DIR} ${WOOB_DIR} \
+    && chown -R www-data:www-data /var/www \
+    && chmod 775 ${WOOB_DIR}
 
-# Create /app with proper permissions (root:root, 755)
-RUN mkdir -p /app && chown root:root /app && chmod 755 /app
+USER www-data
+WORKDIR ${APP_DIR}
 
 # Install vendors (no scripts) with only composer files for better caching
 COPY composer.json composer.lock ./
 RUN composer install --no-dev --prefer-dist --optimize-autoloader --no-scripts
 
 # Copy the rest of the application
-COPY . /app
+COPY . ${APP_DIR}
 
-# Set proper permissions for /app (readable by www-data, writable by root)
-RUN chown -R root:root /app && \
-    find /app -type d -exec chmod 755 {} \; && \
-    find /app -type f -exec chmod 644 {} \; && \
-    chmod -R 775 /app/storage /app/bootstrap/cache && \
-    chown -R www-data:www-data /app/storage /app/bootstrap/cache && \
-    chmod 755 /app/public && \
-    chmod 644 /app/public/index.php
+RUN mkdir -p storage bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache \
+    && chmod 755 public \
+    && chmod 644 public/index.php
+
+USER root
 
 # Optional: run composer post-autoload scripts
 RUN composer run-script post-autoload-dump || true
