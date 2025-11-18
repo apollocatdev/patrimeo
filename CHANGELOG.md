@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.31](https://github.com/apollocatdev/patrimeo/compare/v0.3.30...v0.3.31) (2025-11-18)
+
+
+### Bug Fixes
+
+* change the automatic update of woob ([4f6447b](https://github.com/apollocatdev/patrimeo/commit/4f6447b47383ac05754b8cf60a7ccf0619456006))
+
 ## [0.3.30](https://github.com/apollocatdev/patrimeo/compare/v0.3.29...v0.3.30) (2025-11-18)
 
 ## [0.3.29](https://github.com/apollocatdev/patrimeo/compare/v0.3.28...v0.3.29) (2025-11-18)
