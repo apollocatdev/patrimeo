@@ -18,7 +18,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 
 # --- System deps (root) ---
 RUN apt-get update && apt-get install -y --no-install-recommends \
-      ca-certificates curl git unzip zip tzdata locales supervisor sqlite3 \
+      ca-certificates curl git gpgv unzip zip tzdata locales supervisor sqlite3 \
       python3 python3-venv python3-pip \
       nginx \
       vim-tiny procps \
