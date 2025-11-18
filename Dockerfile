@@ -44,7 +44,7 @@ RUN python3 -m venv /opt/woob-venv \
 RUN ln -s /opt/woob-venv/bin/woob /usr/bin/woob
 
 RUN mkdir -p /home/www-data/.local/share/woob/keyrings \
-    && curl -fsSL https://updates.woob.tech/3/main/keyring.gpg \
+    && curl -fsSL https://updates.woob.tech/stable/main/trusted.gpg \
          -o /home/www-data/.local/share/woob/keyrings/https___updates_woob_tech_3_main_.gpg \
     && chown -R www-data:www-data /home/www-data/.local \
     && chmod 600 /home/www-data/.local/share/woob/keyrings/https___updates_woob_tech_3_main_.gpg
