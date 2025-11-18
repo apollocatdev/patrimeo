@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.28](https://github.com/apollocatdev/patrimeo/compare/v0.3.27...v0.3.28) (2025-11-18)
+
+
+### Bug Fixes
+
+* Add gpgv in Docker for woob updates ([7f6a5fa](https://github.com/apollocatdev/patrimeo/commit/7f6a5fa6ec2371a1341d25e7d97834de2ad50f98))
+
 ## [0.3.27](https://github.com/apollocatdev/patrimeo/compare/v0.3.26...v0.3.27) (2025-11-17)
 
 
