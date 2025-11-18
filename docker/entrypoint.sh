@@ -85,6 +85,12 @@ chown -R www-data:www-data "${WOOB_DIR}"
 chmod 775 "${WOOB_DIR}"
 
 # ───────────────────────────────────────────────
+# Update Woob
+# ───────────────────────────────────────────────
+echo "[woob] Updating modules…"
+sudo -u www-data woob update --quiet || true
+
+# ───────────────────────────────────────────────
 # Start supervisor
 # ───────────────────────────────────────────────
 echo "🚀 Starting Supervisor (Nginx, PHP-FPM, Queue, Scheduler)..."
