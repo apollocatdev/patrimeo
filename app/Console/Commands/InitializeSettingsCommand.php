@@ -2,12 +2,13 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Models\User;
-use App\Settings\LocalizationSettings;
-use App\Settings\IntegrationsSettings;
 use App\Settings\EmailSettings;
+use Illuminate\Console\Command;
 use App\Settings\VariousSettings;
+use Illuminate\Support\Facades\Auth;
+use App\Settings\IntegrationsSettings;
+use App\Settings\LocalizationSettings;
 
 class InitializeSettingsCommand extends Command
 {
@@ -25,7 +26,7 @@ class InitializeSettingsCommand extends Command
             $this->info("Initializing settings for user: {$user->name} (ID: {$user->id})");
 
             // Set the authenticated user context for settings
-            auth()->login($user);
+            Auth::login($user);
 
             try {
                 // Initialize all settings by calling get() on each one
