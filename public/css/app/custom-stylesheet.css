@@ -1,0 +1,41 @@
+/* .fi-ta-cell, .fi-input, .fi-select-input, .fi-ta-cell div{
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
+    border-radius: 0% !important;
+    } */
+.fi-ta-row {
+
+    padding-top: 1px !important;
+    padding-bottom: 1px !important;
+}
+
+.fi-ta-cell div {
+
+    /* margin-top: 0px !important;
+    margin-bottom: 0px !important; */
+    padding-top: 1px !important;
+    padding-bottom: 1px !important;
+}
+
+.fi-ta-header-cell {
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+}
+
+/* 
+.flex{
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+    gap: 3px !important;
+
+}
+.fi-tabs{
+    padding-top: 3px !important;
+    padding-bottom: 3px !important;
+}
+
+.fi-header-heading{
+    font-size: 1.5rem !important;
+} */

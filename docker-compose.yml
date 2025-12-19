@@ -1,0 +1,16 @@
+services:
+  patrimeo:
+    image: ghcr.io/apollocatdev/patrimeo:latest
+    ports:
+      - "11000:80"
+    volumes:
+      - ./storage:/var/www/patrimeo/storage
+      - ./woob:/var/www/.config/woob
+    restart: unless-stopped
+
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
