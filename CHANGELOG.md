@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/apollocatdev/patrimeo/compare/v0.2.0...v0.2.1) (2025-12-19)
+
+
+### Bug Fixes
+
+* use auth facade ([9e081a7](https://github.com/apollocatdev/patrimeo/commit/9e081a7b5410c51973751527a943c9be4b4ce619))
+
 # 0.2.0 (2025-12-19)
 
 
