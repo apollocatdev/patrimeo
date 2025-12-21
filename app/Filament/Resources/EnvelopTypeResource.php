@@ -44,6 +44,8 @@ class EnvelopTypeResource extends Resource
                 TextColumn::make('name')
                     ->searchable(),
             ])
+            ->defaultPaginationPageOption(100)
+            ->paginated([50, 100, 'all'])
             ->filters([
                 //
             ])

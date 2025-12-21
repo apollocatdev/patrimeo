@@ -45,7 +45,8 @@ class EnvelopResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->defaultPaginationPageOption('all')
+            ->defaultPaginationPageOption(100)
+            ->paginated([50, 100, 'all'])
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
