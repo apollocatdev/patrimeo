@@ -32,7 +32,7 @@ class TransactionsAnkr implements TransactionsInterface
         $this->apiKey = $settings->ankrApiKey;
 
         if (empty($this->apiKey)) {
-            throw new TransactionsException($this->asset, 'Lunch Flow API token is not configured. Please set it in Settings > Integrations.', null);
+            throw new TransactionsException($this->asset, 'Transaction Ankr API token is not configured. Please set it in Settings > Integrations.', null);
         }
 
         $this->walletAddress = $this->asset->update_data['wallet_address'] ?? '';
