@@ -3,11 +3,12 @@
 namespace App\Enums;
 
 use Filament\Support\Contracts\HasLabel;
-use App\Services\Transactions\TransactionsCommandJson;
-use App\Services\Transactions\TransactionsCommandSimpleBalance;
+use App\Services\Transactions\TransactionsAnkr;
 use App\Services\Transactions\TransactionsWoob;
 use App\Services\Transactions\TransactionsFinary;
 use App\Services\Transactions\TransactionsLunchFlow;
+use App\Services\Transactions\TransactionsCommandJson;
+use App\Services\Transactions\TransactionsCommandSimpleBalance;
 
 enum TransactionUpdateMethod: string implements HasLabel
 {
@@ -18,6 +19,7 @@ enum TransactionUpdateMethod: string implements HasLabel
     case WOOB = 'woob';
     case FINARY = 'finary';
     case LUNCHFLOW = 'lunchflow';
+    case ANKR_ETHEREUM = 'ankr_ethereum';
 
     public function getLabel(): ?string
     {
@@ -29,6 +31,7 @@ enum TransactionUpdateMethod: string implements HasLabel
             self::WOOB => __('Woob (Weboob)'),
             self::FINARY => __('Finary'),
             self::LUNCHFLOW => __('Lunch Flow'),
+            self::ANKR_ETHEREUM => __('Ankr Ethereum'),
         };
     }
 
@@ -40,6 +43,7 @@ enum TransactionUpdateMethod: string implements HasLabel
             self::WOOB => TransactionsWoob::class,
             self::FINARY => TransactionsFinary::class,
             self::LUNCHFLOW => TransactionsLunchFlow::class,
+            self::ANKR_ETHEREUM => TransactionsAnkr::class,
             self::FIXED, self::MANUAL => null,
         };
     }
@@ -52,6 +56,7 @@ enum TransactionUpdateMethod: string implements HasLabel
             self::LUNCHFLOW => 'lunchflow',
             self::COMMAND_JSON => 'command_json',
             self::COMMAND_SIMPLE_BALANCE => 'command_simple_balance',
+            self::ANKR_ETHEREUM => 'none',
             self::MANUAL, self::FIXED => 'none',
         };
     }
