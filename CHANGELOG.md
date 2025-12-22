@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.3](https://github.com/apollocatdev/patrimeo/compare/v0.2.2...v0.2.3) (2025-12-22)
+
+
+### Bug Fixes
+
+* better error message if Ankr api key is not set ([fe35f6d](https://github.com/apollocatdev/patrimeo/commit/fe35f6d0b22e8936182910d1523d897e4a90c1e2))
+* Transactions not saved ([94634e1](https://github.com/apollocatdev/patrimeo/commit/94634e14603a352f5d3811c900eab2cb583b09b7))
+
 ## [0.2.2](https://github.com/apollocatdev/patrimeo/compare/v0.2.1...v0.2.2) (2025-12-21)
 
 
