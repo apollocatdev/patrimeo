@@ -26,8 +26,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       $PHPIZE_DEPS \
     && rm -rf /var/lib/apt/lists/*
 
+# Dépendances système pour les extensions PHP
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        libgmp-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+
 # PHP extensions
-RUN docker-php-ext-install -j"$(nproc)" intl zip
+RUN docker-php-ext-install -j"$(nproc)" intl zip gmp
 
 # Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
