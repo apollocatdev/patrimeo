@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.4](https://github.com/apollocatdev/patrimeo/compare/v0.2.3...v0.2.4) (2025-12-22)
+
+
+### Bug Fixes
+
+* Docker gmp PHP extension ([cd44e1d](https://github.com/apollocatdev/patrimeo/commit/cd44e1d13fb0047a92f87f550fcdd0b7ad20abb2))
+
 ## [0.2.3](https://github.com/apollocatdev/patrimeo/compare/v0.2.2...v0.2.3) (2025-12-22)
 
 
