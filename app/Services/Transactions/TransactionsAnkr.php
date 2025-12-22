@@ -53,7 +53,6 @@ class TransactionsAnkr implements TransactionsInterface
 
         $assetQuantity = $this->asset->quantity ?? 0;
         $difference = $quantity - $assetQuantity;
-
         if ($difference === 0) {
             return;
         }

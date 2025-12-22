@@ -104,6 +104,7 @@ class Transaction extends Model
             $transaction->destination_quantity = $quantity;
             $transaction->user_id = $destination->user_id;
         }
+        $transaction->save();
         return $transaction;
     }
 }
