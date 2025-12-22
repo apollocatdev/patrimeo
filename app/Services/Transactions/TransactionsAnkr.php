@@ -29,11 +29,14 @@ class TransactionsAnkr implements TransactionsInterface
     {
         /** @var IntegrationsSettings $settings */
         $settings = FilamentSettings::getSettingForUser(IntegrationsSettings::class, $this->asset->user_id);
-        $this->apiKey = $settings->ankrApiKey;
 
-        if (empty($this->apiKey)) {
+
+        if (empty($settings->ankrApiKey)) {
             throw new TransactionsException($this->asset, 'Transaction Ankr API token is not configured. Please set it in Settings > Integrations.', null);
         }
+
+        $this->apiKey = $settings->ankrApiKey;
+
 
         $this->walletAddress = $this->asset->update_data['wallet_address'] ?? '';
         $this->contractAddress = $this->asset->update_data['contract_address'] ?? '';
